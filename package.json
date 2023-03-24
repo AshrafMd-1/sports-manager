@@ -1,0 +1,25 @@
+{
+  "name": "wd201_capstone",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:db": "sudo service postgresql start",
+    "start:dev": "nodemon -e js,ejs",
+    "start:prod": "node index.js"
+  },
+  "keywords": [],
+  "author": "Ashraf Mohammed <21951A6612@iare.ac.in>",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cookie-parser": "^1.4.6",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "tiny-csrf": "^1.1.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
