@@ -1,0 +1,22 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "ashraf",
+    "database": "ss_db_dev",
+    "host": "127.0.0.1",
+    "dialect": "postgres",
+    "logging": false
+  },
+  "test": {
+    "username": "postgres",
+    "password": "ashraf",
+    "database": "ss_db_test",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "production": {
+    "use_env_variable": "DATABASE_URL",
+    "dialect": "postgres",
+    "logging": false
+  }
+}

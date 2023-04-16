@@ -1,0 +1,22 @@
+<html>
+<%- include("head.ejs") %>
+<body>
+<form action="/signup" method="post">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <label for="role">Role</label>
+    <select name=role id="role">
+        <option>Admin</option>
+        <option>Player</option>
+    </select>
+    <label for="firstName">First Name</label>
+    <input type="text" id="firstName" name="firstName" placeholder="Your name..">
+    <label for="lastName">Last Name</label>
+    <input type="text" id="lastName" name="lastName" placeholder="Your last name..">
+    <label for="email">Email</label>
+    <input type="text" id="email" name="email" placeholder="Your email..">
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" placeholder="Your password..">
+    <button type="submit">Submit</button>
+</form>
+</body>
+</html>

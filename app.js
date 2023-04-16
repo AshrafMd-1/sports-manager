@@ -1,31 +1,167 @@
 const express = require('express');
+const bodyParser = require("body-parser");
+const path = require('path');
+const {User, Sport, Session} = require('./models');
+
+const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
 const csurf = require("tiny-csrf");
 const session = require("express-session");
-const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
-const path = require('path');
+
+const passport = require('passport');
+const LocalStrategy = require('passport-local')
 
 const app = express();
 
+app.set('view engine', 'ejs');
+app.set("views", path.resolve(__dirname, "views"));
+app.use(express.static(path.resolve(__dirname, 'public')));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+
 app.use(cookieParser("cookie-parser-secret"));
+app.use(csurf("bxMNjNqSnWZvWE8f6oxTBykN71PoXmHz"));
+
 app.use(session({
+    saveUninitialized: true,
+    resave: true,
     secret: "keyboard cat",
     cookie: {
         maxAge: 3600000
     }
 }));
-app.use(csurf("bxMNjNqSnWZvWE8f6oxTBykN71PoXmHz"));
-app.set('view engine', 'ejs');
-app.use(express.static(path.resolve(__dirname, 'public')));
-app.set("views", path.resolve(__dirname, "views"));
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(
+    new LocalStrategy(
+        {
+            usernameField: "email",
+            passwordField: "password",
+        },
+        (email, password, done) => {
+            User.findOne({
+                where: {
+                    email,
+                },
+            })
+                .then(async (user) => {
+                    if (!user) {
+                        console.log("No User")
+                        return done(null, false);
+                    }
+                    const result = await bcrypt.compare(password, user.password);
+                    if (result) {
+                        console.log("Matched")
+                        return done(null, user);
+                    } else {
+                        console.log("Not Matched")
+                        return done(null, false);
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                    return done(err);
+                });
+        }
+    )
+);
+
+
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
+
+passport.deserializeUser(function (id, done) {
+    User.findByPk(id)
+        .then((user) => {
+            done(null, user);
+        })
+        .catch((err) => {
+            done(err, null);
+        });
+});
+
+const isLoggedIn = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect('/login')
+};
+
+const isAdmin = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        if (req.user.admin) {
+            return next();
+        }
+        res.redirect('/logout')
+    }
+    res.redirect('/login')
+}
 
 app.get('/', (req, res) => {
+    console.log("Get Homepage")
     res.render('homepage', {
-        csrfToken: req.csrfToken()
+        csrfToken: req.csrfToken(),
+        title: 'Homepage'
     });
 });
 
-module.exports = app;
+app.get('/signup', (req, res) => {
+    console.log("Get Signup")
+    res.render('signup', {
+        csrfToken: req.csrfToken(),
+        title: 'Signup'
+    });
+
+});
+
+app.post('/signup', async (req, res) => {
+    console.log("Post Signup")
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const role = (req.body.role.toLowerCase() === "admin");
+    try {
+        const user = await User.createNewUser(req.body, role, hashedPassword)
+        res.send(user)
+    } catch (error) {
+        console.log(error)
+    }
+});
+
+app.get('/login', (req, res) => {
+    console.log("Get Login")
+    res.render('login', {
+        csrfToken: req.csrfToken(),
+        title: 'Login'
+    });
+});
+
+app.post('/login', passport.authenticate('local', {
+    successRedirect: '/dashboard',
+    failureRedirect: '/login',
+}));
+
+app.get('/dashboard', isLoggedIn, (req, res) => {
+    res.send("Dashboard")
+
+});
+
+app.get('/admin', isAdmin, (req, res) => {
+    res.send("Admin")
+
+});
+
+app.get("/logout", (req, res, next) => {
+    req.logout((error) => {
+        if (error) {
+            console.log(error);
+            return next(error);
+        }
+        return res.redirect("/");
+    });
+});
+
+
+module.exports = app
