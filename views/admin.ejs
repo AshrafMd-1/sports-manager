@@ -1,0 +1,41 @@
+<html lang="en">
+<%- include("head.ejs") %>
+<body>
+<h1>Welcome Admin</h1>
+<a href="/new-sport">Add New Sport</a>
+<br>
+<a href="/report">Report</a>
+<br>
+<a href="/new-session">Add New Session</a>
+<hr>
+<br>
+<table>
+    <% for(var i = 0; i < sports.length; i++) { %>
+        <tr>
+            <td><%= sports[i].id %></td>
+            <td><%= sports[i].userId %></td>
+            <td><%= sports[i].sport %></td>
+        </tr>
+    <% } %>
+</table>
+<br>
+<hr>
+<table>
+    <% for(var i = 0; i < sessions.length; i++) { %>
+        <tr>
+            <td><%= sessions[i].id %></td>
+            <td><%= sessions[i].userId %></td>
+            <td><%= sessions[i].sportId %></td>
+            <td><%= sessions[i].title %></td>
+            <td><%= sessions[i].location %></td>
+            <td><%= sessions[i].date %></td>
+            <td><%= sessions[i].members %></td>
+            <td><%= sessions[i].membersCount %></td>
+            <td><%= sessions[i].title %></td>
+        </tr>
+    <% } %>
+</table>
+<br>
+<hr>
+</body>
+</html>

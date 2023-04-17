@@ -1,4 +1,5 @@
 'use strict';
+const moment = require('moment');
 const {
     Model
 } = require('sequelize');
@@ -18,14 +19,36 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: 'sportId',
             });
         }
+
+        static  createNewSession(userId,body) {
+            const dateBody= body.date.split('-').map((item) => parseInt(item));
+            const timeBody= body.time.split(':').map((item) => parseInt(item));
+            body.date = moment().set({
+                year: dateBody[0],
+                month: dateBody[1] - 1,
+                date: dateBody[2],
+                hour: timeBody[0],
+                minute: timeBody[1],
+                second: 0,
+            })
+            return this.create({
+                userId: userId,
+                sportId: Number(body.sport),
+                title: body.title,
+                location: body.location,
+                date: body.date,
+                members: body.members.split(','),
+                membersCount: body.memberCount
+            })
+        }
     }
 
     Session.init({
-        name: DataTypes.STRING,
+        title: DataTypes.STRING,
         location: DataTypes.STRING,
         date: DataTypes.DATE,
-        members: DataTypes.JSON,
-        memberCount: DataTypes.INTEGER
+        members: DataTypes.ARRAY(DataTypes.STRING),
+        membersCount: DataTypes.INTEGER
     }, {
         sequelize,
         modelName: 'Session',

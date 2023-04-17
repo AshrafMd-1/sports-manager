@@ -9,7 +9,7 @@ module.exports = {
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
-            name: {
+            title: {
                 type: Sequelize.STRING,
                 allowNull: false
             },
@@ -22,10 +22,10 @@ module.exports = {
                 allowNull: false
             },
             members: {
-                type: Sequelize.JSON,
+                type: Sequelize.ARRAY(Sequelize.STRING),
                 allowNull: false
             },
-            memberCount: {
+            membersCount: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
                 defaultValue: 0

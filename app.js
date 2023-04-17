@@ -3,6 +3,8 @@ const bodyParser = require("body-parser");
 const path = require('path');
 const {User, Sport, Session} = require('./models');
 
+const moment = require('moment');
+
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const csurf = require("tiny-csrf");
@@ -101,7 +103,7 @@ const isAdmin = (req, res, next) => {
     res.redirect('/login')
 }
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
     console.log("Get Homepage")
     res.render('homepage', {
         csrfToken: req.csrfToken(),
@@ -124,7 +126,7 @@ app.post('/signup', async (req, res) => {
     const role = (req.body.role.toLowerCase() === "admin");
     try {
         const user = await User.createNewUser(req.body, role, hashedPassword)
-        res.send(user)
+        res.redirect('/dashboard')
     } catch (error) {
         console.log(error)
     }
@@ -143,10 +145,65 @@ app.post('/login', passport.authenticate('local', {
     failureRedirect: '/login',
 }));
 
-app.get('/dashboard', isLoggedIn, (req, res) => {
-    res.send("Dashboard")
-
+app.get('/dashboard', isLoggedIn, async (req, res) => {
+    if (req.user.admin) {
+        let sessions = await Session.findAll();
+        const sports = await Sport.findAll();
+        sessions.forEach(session => {
+            session.dataValues.date = moment(session.dataValues.date).format('MMMM Do YYYY, h:mm a');
+        })
+        res.render('admin', {
+            csrfToken: req.csrfToken(),
+            title: 'Dashboard',
+            sports: sports,
+            sessions: sessions
+        })
+    } else {
+        res.render('player', {
+            csrfToken: req.csrfToken(),
+            title: 'Dashboard'
+        });
+    }
 });
+
+app.get('/new-sport', isAdmin, (req, res) => {
+    res.render('new-sport', {
+        csrfToken: req.csrfToken(),
+        title: 'New Sport'
+    });
+});
+
+app.post('/new-sport', isAdmin, async (req, res) => {
+    try {
+        const sport = await Sport.createNewSport(req.user.id, req.body.sport)
+        res.redirect('/dashboard')
+    } catch (error) {
+        console.log(error)
+    }
+});
+
+app.get('/new-session', isLoggedIn, async (req, res) => {
+    const sports = await Sport.findAll();
+    if (sports.length === 0) {
+        res.redirect('/dashboard')
+    }
+
+    res.render('new-session', {
+        csrfToken: req.csrfToken(),
+        title: 'New Session',
+        sports: sports
+    });
+});
+
+app.post('/new-session', isLoggedIn, async (req, res) => {
+    try {
+        await Session.createNewSession(req.user.id, req.body)
+        res.redirect('/dashboard')
+    } catch (error) {
+        console.log(error)
+    }
+});
+
 
 app.get('/admin', isAdmin, (req, res) => {
     res.send("Admin")

@@ -17,6 +17,15 @@ module.exports = (sequelize, DataTypes) => {
             Sport.hasMany(models.Session, {
                 foreignKey: 'sportId',
             });
+
+        }
+
+
+         static createNewSport(userId,sport) {
+            return this.create({
+                sport,
+                userId
+            })
         }
     }
 

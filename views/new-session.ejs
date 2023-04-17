@@ -1,0 +1,32 @@
+<html>
+<%- include('head.ejs')%>
+<body>
+
+<h1>
+    Create New Session
+</h1>
+
+<form action="/new-session" method="post">
+    <input type="hidden" value="<%= csrfToken%>" name="_csrf">
+    <label for="title">Title</label>
+    <input type="text" name="title" id="title">
+    <label for="sport">Sport</label>
+    <select name="sport" id="sport">
+        <% for(var i = 0; i < sports.length; i++) { %>
+        <option value="<%= sports[i].id %>"><%= sports[i].sport %></option>
+    <% } %>
+    </select>
+    <label for="date">Date</label>
+    <input type="date" name="date" id="date">
+    <label for="time">Time</label>
+    <input type="time" name="time" id="time">
+    <label for="location">Location</label>
+    <input type="text" name="location" id="location">
+    <label for="members">Members</label>
+    <input type="text" name="members" id="members">
+    <label for="memberCount">Member Count</label>
+    <input type="number" name="memberCount" id="memberCount" value="0">
+    <button type="submit">Create</button>
+</form>
+</body>
+</html>

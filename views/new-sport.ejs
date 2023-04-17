@@ -1,0 +1,15 @@
+<html>
+<%- include('head.ejs')%>
+<body>
+<h1>
+    Create New Sport
+</h1>
+
+<form action="/new-sport" method="post">
+    <input type="hidden" value="<%= csrfToken%>" name="_csrf">
+    <label for="sport">Sport</label>
+    <input type="text" name="sport" id="sport">
+    <button type="submit">Create</button>
+</form>
+</body>
+</html>
