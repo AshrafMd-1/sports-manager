@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
         }
 
 
-         static createNewSport(userId,sport) {
+        static createNewSport(userId, sport) {
             return this.create({
                 sport,
                 userId

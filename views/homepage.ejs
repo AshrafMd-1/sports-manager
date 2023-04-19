@@ -1,9 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-<%- include("head.ejs")%>
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="<%= csrfToken %>" name="_csrf">
+    <link href="css/homepage.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <title><%= title %></title>
+</head>
 <body>
-<a href="\signup">signup</a>
-<br>
-<a href="\login">login</a>
+<div class="page">
+    <nav class="nav">
+        <div class="logo">
+            <img alt="logo" src="../images/logo-home.png">
+        </div>
+        <div class="title">
+
+            <span class="primary">Sport</span>
+            <span class="secondary">Dash</span>
+
+        </div>
+        <div class="user">
+            <p>
+                <span class="salutation">Hello</span>
+                <span class="name">John Doe</span>
+            </p>
+        </div>
+    </nav>
+    <main class="main">
+        <div class="main-content">
+            <div class="main-content-body">
+                <span class="header">Welcome To Sport Dash</span>
+                <p>
+                    Introducing our innovative online sports scheduling platform, designed to streamline the scheduling
+                    process for any type of sports-related activity.
+                </p>
+
+            </div>
+
+            <div class="main-button">
+                <a href="/signup">
+                    <button class="btn">Get Started</button>
+                </a>
+                <a href="/login">
+                    <button class="btn">Login</button>
+                </a>
+            </div>
+        </div>
+        <div class="icons">
+            <a class="fa fa-facebook" href="http://www.facebook.com" target="_blank"></a>
+            <a class="fa fa-twitter" href="http://www.twitter.com" target="_blank"></a>
+            <a class="fa fa-instagram" href="http://www.instagram.com" target="_blank"></a>
+            <a class="fa fa-linkedin" href="https://in.linkedin.com" target="_blank"></a>
+        </div>
+    </main>
+</div>
 </body>
 </html>

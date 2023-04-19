@@ -34,21 +34,19 @@ module.exports = (sequelize, DataTypes) => {
             return this.create({
                 userId: userId,
                 sportId: Number(body.sport),
-                title: body.title,
                 location: body.location,
                 date: body.date,
                 members: body.members.split(','),
-                membersCount: body.memberCount
+                required: body.required
             })
         }
     }
 
     Session.init({
-        title: DataTypes.STRING,
         location: DataTypes.STRING,
         date: DataTypes.DATE,
         members: DataTypes.ARRAY(DataTypes.STRING),
-        membersCount: DataTypes.INTEGER
+        required: DataTypes.INTEGER
     }, {
         sequelize,
         modelName: 'Session',

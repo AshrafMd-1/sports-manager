@@ -86,6 +86,13 @@ passport.deserializeUser(function (id, done) {
         });
 });
 
+const alreadyLoggedIn = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        res.redirect('/dashboard')
+    } else {
+        return next()
+    }
+}
 const isLoggedIn = (req, res, next) => {
     if (req.isAuthenticated()) {
         return next();
@@ -103,7 +110,7 @@ const isAdmin = (req, res, next) => {
     res.redirect('/login')
 }
 
-app.get('/', async (req, res) => {
+app.get('/', alreadyLoggedIn, async (req, res) => {
     console.log("Get Homepage")
     res.render('homepage', {
         csrfToken: req.csrfToken(),
@@ -111,7 +118,7 @@ app.get('/', async (req, res) => {
     });
 });
 
-app.get('/signup', (req, res) => {
+app.get('/signup', alreadyLoggedIn, (req, res) => {
     console.log("Get Signup")
     res.render('signup', {
         csrfToken: req.csrfToken(),
@@ -132,7 +139,7 @@ app.post('/signup', async (req, res) => {
     }
 });
 
-app.get('/login', (req, res) => {
+app.get('/login', alreadyLoggedIn, (req, res) => {
     console.log("Get Login")
     res.render('login', {
         csrfToken: req.csrfToken(),

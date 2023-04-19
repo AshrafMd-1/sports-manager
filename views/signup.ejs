@@ -1,22 +1,51 @@
-<html>
-<%- include("head.ejs") %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="<%= csrfToken %>" name="_csrf">
+    <link href="css/auth.css" rel="stylesheet">
+    <link href="css/base.css" rel="stylesheet">
+    <title><%= title %></title>
+</head>
 <body>
-<form action="/signup" method="post">
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-    <label for="role">Role</label>
-    <select name=role id="role">
-        <option>Admin</option>
-        <option>Player</option>
-    </select>
-    <label for="firstName">First Name</label>
-    <input type="text" id="firstName" name="firstName" placeholder="Your name..">
-    <label for="lastName">Last Name</label>
-    <input type="text" id="lastName" name="lastName" placeholder="Your last name..">
-    <label for="email">Email</label>
-    <input type="text" id="email" name="email" placeholder="Your email..">
-    <label for="password">Password</label>
-    <input type="password" id="password" name="password" placeholder="Your password..">
-    <button type="submit">Submit</button>
-</form>
+<%- include("nav.ejs") %>
+<main>
+    <div class="header">
+        <p>Sign Up</p>
+    </div>
+    <p>Welcome, future acquaintance</p>
+    <form action="/signup" class="signup-form" method="post">
+        <input name="_csrf" type="hidden" value="<%= csrfToken %>">
+        <div class="signup-input">
+            <label for="role">Role</label>
+            <select id="role" name="role" required>
+                <option value="player">Player</option>
+                <option value="admin">Admin</option>
+            </select>
+        </div>
+        <div class="signup-input">
+            <label for="firstName">First Name</label>
+            <input id="firstName" name="firstName" placeholder="First Name" required type="text">
+        </div>
+        <div class="signup-input">
+            <label for="lastName">Last Name</label>
+            <input id="lastName" name="lastName" placeholder="Last Name" required type="text">
+        </div>
+        <div class="signup-input">
+            <label for="email">Email</label>
+            <input id="email" name="email" placeholder="Email" required type="text">
+        </div>
+        <div class="signup-input">
+            <label for="password">Password</label>
+            <input id="password" name="password" placeholder="Password" required type="password">
+        </div>
+        <button class="submit" type="submit">Sign Up</button>
+    </form>
+    <div class="present">
+        <p>Already have an account</p>
+        <p><a href="/login">Login</a></p>
+    </div>
+</main>
 </body>
 </html>

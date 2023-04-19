@@ -1,0 +1,111 @@
+body {
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+}
+
+.header p {
+    font-size: 30px;
+    font-weight: 700;
+    margin: 0;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 40px;
+
+}
+
+main p {
+    font-size: 22px;
+    margin: 12px;
+
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #333;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    border-radius: 30px;
+    padding: 18px;
+}
+
+form select {
+    width: 300px;
+    height: 40px;
+    border: 1px solid #333;
+    border-radius: 12px;
+    margin: 10px;
+    padding: 5px;
+    font-size: 17px;
+    min-width: 311px;
+}
+
+form input {
+    width: 300px;
+    height: 23px;
+    border: 1px solid #333;
+    border-radius: 12px;
+    margin: 10px;
+    padding: 11px;
+    font-size: 17px;
+}
+
+form label {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+form button {
+    width: 300px;
+    border: 1px solid #333;
+    border-radius: 12px;
+    margin: 10px;
+    padding: 11px;
+    font-size: 17px;
+    background-color: #333;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+form button:hover {
+    font-size: 22px;
+}
+
+.signup-input, .login-input {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.present {
+    margin: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+}
+
+.present p {
+    text-align: center;
+    margin: 0;
+    font-size: 20px;
+}
+
+a {
+    font-size: 22px;
+    font-weight: 700;
+    text-decoration: none;
+    color: #cd19e1;
+    text-shadow: 0 0 1px #cd19e1;
+}
