@@ -17,9 +17,16 @@ module.exports = (sequelize, DataTypes) => {
             Sport.hasMany(models.Session, {
                 foreignKey: 'sportId',
             });
-
         }
 
+        static getSportId(sport) {
+            return this.findOne({
+                where: {
+                    sport: sport
+                },
+                attributes: ['id']
+            });
+        }
 
         static createNewSport(userId, sport) {
             return this.create({

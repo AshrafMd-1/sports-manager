@@ -202,21 +202,15 @@ app.post('/sports/new-sport', isAdmin, async (req, res) => {
 
 app.get('/sports/:sport', isLoggedIn, async (req, res) => {
     console.log(`Get ${req.params.sport} Sport`)
-    const sportId = await Sport.findOne({
-        where: {
-            sport: req.params.sport,
-        }
-    });
-    const sessions = await Session.findAll({
-        where: {
-            sportId: sportId.dataValues.id
-        }
-    });
+    const sportId = await Sport.getSportId(req.params.sport)
+    const oldSessions = await Session.getOlderSessions(sportId.dataValues.id)
+    const newSessions = await Session.getNewerSessions(sportId.dataValues.id)
     res.render('session', {
         csrfToken: req.csrfToken(),
         title: `${req.params.sport} Sessions`,
         sport: req.params.sport,
-        session: sessions.map(session => session.dataValues)
+        oldSessions: oldSessions.map(session => session.dataValues),
+        newSessions: newSessions.map(session => session.dataValues)
     })
 });
 

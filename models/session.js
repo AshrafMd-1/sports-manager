@@ -1,5 +1,6 @@
 'use strict';
 const moment = require('moment');
+const Op = require('sequelize').Op;
 const {
     Model
 } = require('sequelize');
@@ -20,15 +21,29 @@ module.exports = (sequelize, DataTypes) => {
             });
         }
 
-        static async getSessionsByUserId(userId) {
-            return await this.findAll({
+        static getOlderSessions(sportId) {
+            return this.findAll({
                 where: {
-                    userId: userId
+                    date: {
+                        [Op.lt]: moment().toDate()
+                    },
+                    sportId: sportId
                 }
             });
         }
 
-        static createNewSession(userId, body,sportId) {
+        static getNewerSessions(sportId) {
+            return this.findAll({
+                where: {
+                    date: {
+                        [Op.gt]: moment().toDate()
+                    },
+                    sportId: sportId
+                }
+            });
+        }
+
+        static createNewSession(userId, body, sportId) {
             const dateBody = body.date.split('-').map((item) => parseInt(item));
             const timeBody = body.time.split(':').map((item) => parseInt(item));
             body.date = moment().set({
