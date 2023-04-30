@@ -5,6 +5,47 @@ body {
     overflow-y: auto;
 }
 
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 12px;
+    background-color: white;
+    height: 60px;
+    margin: 8px 6px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    font-size: 26px;
+    text-decoration: none;
+}
+
+.logo p {
+    margin-left: 2px;
+}
+
+.logo img {
+    width: 28px;
+}
+
+
+.home a{
+    text-decoration: none;
+    color: #565656;
+transition: font-size 0.3s;
+    font-size: 1.4em
+}
+
+.home a:hover {
+    color: #000000;
+    text-shadow: 0 0 1px #000000;
+    text-decoration: underline;
+     font-size: 1.6em;
+}
+
+
 .header p {
     font-size: 30px;
     font-weight: 700;
@@ -46,7 +87,7 @@ form select {
     margin: 10px;
     padding: 5px;
     font-size: 17px;
-    min-width: 311px;
+    min-width: 321px;
 }
 
 form input {
@@ -106,6 +147,13 @@ a {
     font-size: 22px;
     font-weight: 700;
     text-decoration: none;
-    color: #cd19e1;
-    text-shadow: 0 0 1px #cd19e1;
+    color: #565656;
+    transition: all 0.3s;
+}
+
+a:hover {
+color: #000000;
+    text-shadow: 0 0 1px #000000;
+    text-decoration: underline;
+    font-size: 24px;
 }

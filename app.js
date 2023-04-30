@@ -133,7 +133,7 @@ app.post('/signup', async (req, res) => {
     const role = (req.body.role.toLowerCase() === "admin");
     try {
         const user = await User.createNewUser(req.body, role, hashedPassword)
-        res.redirect('/dashboard')
+        res.redirect('/login')
     } catch (error) {
         console.log(error)
     }
@@ -153,17 +153,18 @@ app.post('/login', passport.authenticate('local', {
 }));
 
 app.get('/dashboard', isLoggedIn, async (req, res) => {
+    console.log("Get Dashboard")
     if (req.user.admin) {
         let sessions = await Session.findAll();
         const sports = await Sport.findAll();
         sessions.forEach(session => {
             session.dataValues.date = moment(session.dataValues.date).format('MMMM Do YYYY, h:mm a');
         })
-        res.render('admin', {
+        res.render('dashboard', {
             csrfToken: req.csrfToken(),
             title: 'Dashboard',
-            sports: sports,
-            sessions: sessions
+            // sports: sports,
+            // sessions: sessions
         })
     } else {
         res.render('player', {
@@ -173,38 +174,70 @@ app.get('/dashboard', isLoggedIn, async (req, res) => {
     }
 });
 
-app.get('/new-sport', isAdmin, (req, res) => {
+app.get('/sports', isLoggedIn, async (req, res) => {
+    console.log("Get Sports")
+    const sports = await Sport.findAll();
+    res.render('sports', {
+        csrfToken: req.csrfToken(),
+        title: 'Sports',
+        sports: sports.map(sport => sport.dataValues.sport)
+    });
+});
+app.get('/sports/new-sport', isAdmin, (req, res) => {
+    console.log("Get New Sport")
     res.render('new-sport', {
         csrfToken: req.csrfToken(),
         title: 'New Sport'
     });
 });
 
-app.post('/new-sport', isAdmin, async (req, res) => {
+app.post('/sports/new-sport', isAdmin, async (req, res) => {
     try {
-        const sport = await Sport.createNewSport(req.user.id, req.body.sport)
-        res.redirect('/dashboard')
+        const sport = await Sport.createNewSport(req.user.id, req.body.sport.charAt(0).toUpperCase() + req.body.sport.slice(1))
+        res.redirect('/sports')
     } catch (error) {
         console.log(error)
     }
 });
 
-app.get('/new-session', isLoggedIn, async (req, res) => {
-    const sports = await Sport.findAll();
-    if (sports.length === 0) {
-        res.redirect('/dashboard')
-    }
+app.get('/sports/:sport', isLoggedIn, async (req, res) => {
+    console.log(`Get ${req.params.sport} Sport`)
+    const sportId = await Sport.findOne({
+        where: {
+            sport: req.params.sport,
+        }
+    });
+    const sessions = await Session.findAll({
+        where: {
+            sportId: sportId.dataValues.id
+        }
+    });
+    res.render('session', {
+        csrfToken: req.csrfToken(),
+        title: `${req.params.sport} Sessions`,
+        sport: req.params.sport,
+        session: sessions.map(session => session.dataValues)
+    })
+});
 
+app.get('/sports/:sport/new-session', isLoggedIn, async (req, res) => {
+    console.log(`Get New ${req.params.sport} Session`)
     res.render('new-session', {
         csrfToken: req.csrfToken(),
-        title: 'New Session',
-        sports: sports
+        title: `New ${req.params.sport} Session`,
+        sport: req.params.sport
     });
 });
 
-app.post('/new-session', isLoggedIn, async (req, res) => {
+app.post('/sports/:sport/new-session', isLoggedIn, async (req, res) => {
+    console.log("Post New Session")
     try {
-        await Session.createNewSession(req.user.id, req.body)
+        const sportId = (await Sport.findOne({
+            where: {
+                sport: req.params.sport
+            }
+        })).dataValues.id
+        await Session.createNewSession(req.user.id, req.body, sportId)
         res.redirect('/dashboard')
     } catch (error) {
         console.log(error)

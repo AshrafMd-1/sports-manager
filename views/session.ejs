@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="<%= csrfToken %>" name="_csrf">
+    <title><%= title %></title>
+    <link href="../css/dashboard.css" rel="stylesheet">
+    <link href="../css/nav.css" rel="stylesheet">
+    <link href="../css/sessions.css" rel="stylesheet">
+</head>
+<body>
+<%- include("nav.ejs") %>
+<main>
+    <div class="breadcrumb">
+        <ul>
+            <li><a href="/Sports">Sports</a></li>
+            <li>/</li>
+            <li><a href="#"><%= sport %></a></li>
+        </ul>
+    </div>
+    <div class="intro">
+        <h1><%= sport %></h1>
+        <a href="/sports/<%= sport %>/new-session" class="new-session">New Session</a>
+    </div>
+    <%- include("session-template.ejs",{title:"Upcoming sessions",sport:sport,session:session}) %>
+    <%- include("session-template.ejs",{title:"Old sessions",sport:sport,session:session}) %>
+</main>
+</body>
+</html>

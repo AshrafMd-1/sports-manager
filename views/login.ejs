@@ -5,10 +5,17 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="<%= csrfToken %>" name="_csrf">
     <link href="css/auth.css" rel="stylesheet">
-    <link href="css/base.css" rel="stylesheet">
     <title><%= title %></title>
 </head>
-<%- include("nav.ejs") %>
+<nav>
+    <div class="logo">
+        <img src="../images/logo-signup.png">
+        <p>Sport Dash</p>
+    </div>
+    <div class="home">
+        <a href="/">Home Page</a>
+    </div>
+</nav>
 <body>
 <main>
     <div class="header">

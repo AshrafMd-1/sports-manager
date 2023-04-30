@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="<%= csrfToken %>" name="_csrf">
+    <title><%= title %></title>
+    <link href="./css/dashboard.css" rel="stylesheet">
+    <link href="./css/sports.css" rel="stylesheet">
+    <link href="./css/nav.css" rel="stylesheet">
+</head>
+<body>
+<%- include("nav.ejs") %>
+<main>
+    <div class="intro">
+        <h1>Sports</h1>
+        <a href="/sports/new-sport" class="new-sport">New Sport</a>
+    </div>
+    <div class="sports">
+        <% for(let i = 0;i < sports.length;i++){ %>
+            <a href="/sports/<%= sports[i] %>">
+                <div class="sport">
+                    <h2><%= sports[i] %></h2>
+                </div>
+            </a>
+        <% } %>
+    </div>
+</main>
+</body>
+</html>

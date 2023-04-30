@@ -1,0 +1,86 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+main{
+    margin:5px;
+}
+
+main > h1 {
+    font-size: 35px;
+    font-weight: 600;
+    color: #000000;
+    margin: 5px 0 15px 0;
+}
+
+main div > h1 {
+    font-size: 30px;
+}
+
+.breadcrumb {
+    margin: 0;
+    padding: 0;
+}
+
+.breadcrumb ul {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    list-style: none;
+    margin-top: 5px;
+    padding: 0;
+    margin-bottom: 0;
+}
+
+.breadcrumb ul li {
+    margin: 0 2px;
+}
+
+.breadcrumb ul li a {
+    text-decoration: none;
+    color: #565656;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.breadcrumb ul li a:hover {
+    color: #435dec;
+    text-decoration: underline;
+}
+
+.new-sport,.add,.cancel,.new-session,.view-session {
+    border: 1px solid #333;
+    border-radius: 12px;
+    margin: 10px;
+    padding: 11px;
+    font-size: 17px;
+    background-color: #333;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.3s;
+    text-decoration: none;
+}
+
+.new-sport:hover,.add:hover,.cancel:hover,.new-session:hover,.view-session:hover {
+    font-size: 19px;
+}
+
+.view-session{
+    padding:6px;
+}
+
+.view-session:hover{
+    padding:8px;
+}
+
+.no-sessions{
+    font-size: 20px;
+    font-weight: 600;
+    color: #ff0000;
+    margin: 5px 0 15px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

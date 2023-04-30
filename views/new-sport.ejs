@@ -1,15 +1,38 @@
-<html>
-<%- include('head.ejs')%>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="<%= csrfToken %>" name="_csrf">
+    <title><%= title %></title>
+    <link href="../css/dashboard.css" rel="stylesheet">
+    <link href="../css/nav.css" rel="stylesheet">
+    <link href="../css/new.css" rel="stylesheet">
+</head>
 <body>
-<h1>
-    Create New Sport
-</h1>
-
-<form action="/new-sport" method="post">
-    <input type="hidden" value="<%= csrfToken%>" name="_csrf">
-    <label for="sport">Sport</label>
-    <input type="text" name="sport" id="sport">
-    <button type="submit">Create</button>
-</form>
+<%- include("nav.ejs") %>
+<main>
+    <div class="breadcrumb">
+        <ul>
+            <li><a href="/sports">Sports</a></li>
+            <li>/</li>
+            <li><a href="#">New-Sport</a></li>
+        </ul>
+    </div>
+    <div class="intro">
+        <h1>Add New Sports</h1>
+        <div class="buttons">
+            <a href="/sports" class="cancel">Cancel</a>
+        </div>
+    </div>
+    <form id="new-Sport" action="/sports/new-sport" method="post">
+        <input name="_csrf" type="hidden" value="<%= csrfToken %>">
+        <div class="form-group">
+            <label for="sport">Sport</label>
+            <input id="sport" name="sport" type="text" required>
+            <button class="add" type="submit">Add</button>
+        </div>
+    </form>
+</main>
 </body>
 </html>

@@ -20,9 +20,17 @@ module.exports = (sequelize, DataTypes) => {
             });
         }
 
-        static  createNewSession(userId,body) {
-            const dateBody= body.date.split('-').map((item) => parseInt(item));
-            const timeBody= body.time.split(':').map((item) => parseInt(item));
+        static async getSessionsByUserId(userId) {
+            return await this.findAll({
+                where: {
+                    userId: userId
+                }
+            });
+        }
+
+        static createNewSession(userId, body,sportId) {
+            const dateBody = body.date.split('-').map((item) => parseInt(item));
+            const timeBody = body.time.split(':').map((item) => parseInt(item));
             body.date = moment().set({
                 year: dateBody[0],
                 month: dateBody[1] - 1,
@@ -33,10 +41,9 @@ module.exports = (sequelize, DataTypes) => {
             })
             return this.create({
                 userId: userId,
-                sportId: Number(body.sport),
+                sportId: Number(sportId),
                 location: body.location,
                 date: body.date,
-                members: body.members.split(','),
                 required: body.required
             })
         }
@@ -45,7 +52,7 @@ module.exports = (sequelize, DataTypes) => {
     Session.init({
         location: DataTypes.STRING,
         date: DataTypes.DATE,
-        members: DataTypes.ARRAY(DataTypes.STRING),
+        membersId: DataTypes.ARRAY(DataTypes.INTEGER),
         required: DataTypes.INTEGER
     }, {
         sequelize,

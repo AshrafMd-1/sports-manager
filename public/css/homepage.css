@@ -21,28 +21,25 @@ body {
 
 .nav {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     padding: 0 20px;
 }
 
-.nav .logo {
-    width: 60px;
+.nav .logo img {
+    width: 45px;
 
 }
 
 
 .nav .title {
     font-family: 'Permanent Marker', cursive;
-    font-size: 40px;
+    font-size: 30px;
     font-weight: bold;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     transition: font-size .5s;
 }
 
-.nav .title:hover {
-    font-size: 50px;
-}
 
 .nav .title .primary {
     color: darkviolet;
@@ -146,7 +143,7 @@ body {
     font-size: 20px;
 }
 
-.icons{
+.icons {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -154,13 +151,13 @@ body {
 }
 
 .fa {
-  padding: 10px;
-  font-size: 30px;
-  width: 50px;
-  text-align: center;
-  text-decoration: none;
-  margin: 5px 2px;
-     border-radius: 10px ;
+    padding: 10px;
+    font-size: 30px;
+    width: 50px;
+    text-align: center;
+    text-decoration: none;
+    margin: 5px 2px;
+    border-radius: 10px;
     border: 2px solid white;
     transition: all .5s ease;
 }
@@ -170,18 +167,18 @@ body {
 }
 
 .fa-facebook {
-  color: white;
+    color: white;
 }
 
 .fa-twitter {
-  color: white;
+    color: white;
 }
 
 .fa-linkedin {
-  color: white;
+    color: white;
 }
 
 .fa-instagram {
-  color: white;
+    color: white;
 }
 
