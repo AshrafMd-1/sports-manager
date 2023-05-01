@@ -5,25 +5,30 @@
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <meta content="<%= csrfToken %>" name="_csrf">
     <title><%= title %></title>
-    <link href="./css/dashboard.css" rel="stylesheet">
-    <link href="./css/sports.css" rel="stylesheet">
-    <link href="./css/nav.css" rel="stylesheet">
+    <link href="../css/dashboard.css" rel="stylesheet">
+    <link href="../css/sports.css" rel="stylesheet">
+    <link href="../css/nav.css" rel="stylesheet">
 </head>
 <body>
-<%- include("nav.ejs") %>
+<%- include("nav.ejs",{admin:admin}) %>
 <main>
     <div class="intro">
         <h1>Sports</h1>
+        <%if(admin){%>
         <a href="/sports/new-sport" class="new-sport">New Sport</a>
+        <%}%>
     </div>
     <div class="sports">
-        <% for(let i = 0;i < sports.length;i++){ %>
-            <a href="/sports/<%= sports[i] %>">
-                <div class="sport">
-                    <h2><%= sports[i] %></h2>
-                </div>
-            </a>
-        <% } %>
+        <% if(sports.length === 0){ %>
+            <h1 class="no-sports">No sports found</h1>
+        <% }else{ %>
+            <% for(let i = 0;i < sports.length;i++){ %>
+                <a href="/sports/<%= sports[i] %>">
+                    <div class="sport">
+                        <h2><%= sports[i] %></h2>
+                    </div>
+                </a>
+        <% }} %>
     </div>
 </main>
 </body>

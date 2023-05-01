@@ -75,7 +75,7 @@ main div > h1 {
     padding:8px;
 }
 
-.no-sessions,.full{
+.no-sessions,.full,.no-sports,.no-members{
     font-size: 20px;
     font-weight: 600;
     color: #ff0000;
@@ -83,4 +83,10 @@ main div > h1 {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.no-sports{
+    font-size: 25px;
+    display: block;
+    margin: 0 auto;
 }

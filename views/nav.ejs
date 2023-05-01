@@ -9,10 +9,16 @@
     </div>
     <div class="links">
         <ul>
-            <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/sports">Sports</a></li>
-            <li><a href="/report">Report</a></li>
-            <li><a href="/logout">Logout</a></li>
+            <% if(admin){ %>
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/sports">Sports</a></li>
+                <li><a href="/report">Report</a></li>
+                <li><a href="/logout">Logout</a></li>
+            <% } else { %>
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/sports">Sports</a></li>
+                <li><a href="/logout">Logout</a></li>
+            <% } %>
         </ul>
     </div>
 </nav>

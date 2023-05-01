@@ -10,7 +10,7 @@
     <link href="./css/nav.css" rel="stylesheet">
 </head>
 <body>
-<%- include("nav.ejs") %>
+<%- include("nav.ejs",{admin:admin}) %>
 <main>
     <h1>Welcome back, John Doe</h1>
     <%- include("session-template.ejs",{title:"Joined Sessions",sport:joinedSports,session:joinedSessions,dashboard:dashboard}) %>

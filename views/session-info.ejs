@@ -10,7 +10,7 @@
     <link href="../../css/sessions.css" rel="stylesheet">
 </head>
 <body>
-<%- include("nav.ejs") %>
+<%- include("nav.ejs",{admin:admin}) %>
 <main>
     <div class="breadcrumb">
         <ul>
@@ -56,31 +56,34 @@
         <div class="info-members">
             <span class="info-key">Members</span>
             <div class="members">
-                <% for(let i = 0;i < members.length;i++){ %>
-                    <div class="member">
-                        <div class="member-text">
-                            <span class="member-key">ID:</span>
-                            <span class="member-value"><%= members[i].id %></span>
-                        </div>
-                        <div class="member-text">
-                            <span class="member-key">First Name:</span>
-                            <span class="member-value"><%= members[i].firstName %></span>
-                        </div>
-                        <div class="member-text">
-                            <span class="member-key">Last Name:</span>
-                            <span class="member-value"><%= members[i].lastName %></span>
-                        </div>
-                        <div class="member-text">
-                            <span class="member-key">email:</span>
-                            <span class="member-value"><%= members[i].email %></span>
-                        </div>
-                        <% if(userId === members[i].id && !old ){ %>
+                <% if(members.length === 0){ %>
+                    <span class="no-members">No Members</span>
+                <% }else{ %>
+                    <% for(let i = 0;i < members.length;i++){ %>
+                        <div class="member">
                             <div class="member-text">
-                                <a href="/sports/<%= sport %>/<%= id %>/leave" class="leave">Leave Session</a>
+                                <span class="member-key">ID:</span>
+                                <span class="member-value"><%= members[i].id %></span>
                             </div>
-                        <% } %>
-                    </div>
-                <% } %>
+                            <div class="member-text">
+                                <span class="member-key">First Name:</span>
+                                <span class="member-value"><%= members[i].firstName %></span>
+                            </div>
+                            <div class="member-text">
+                                <span class="member-key">Last Name:</span>
+                                <span class="member-value"><%= members[i].lastName %></span>
+                            </div>
+                            <div class="member-text">
+                                <span class="member-key">email:</span>
+                                <span class="member-value"><%= members[i].email %></span>
+                            </div>
+                            <% if(userId === members[i].id && !old ){ %>
+                                <div class="member-text">
+                                    <a href="/sports/<%= sport %>/<%= id %>/leave" class="leave">Leave Session</a>
+                                </div>
+                            <% } %>
+                        </div>
+                <% }} %>
             </div>
         </div>
     </div>
