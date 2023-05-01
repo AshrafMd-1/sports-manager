@@ -20,13 +20,22 @@ module.exports = (sequelize, DataTypes) => {
             });
         }
 
-        static createNewUser(body,role,hashPassword) {
+        static createNewUser(body, role, hashPassword) {
             return this.create({
                 admin: role,
                 firstName: body.firstName.charAt(0).toUpperCase() + body.firstName.slice(1),
                 lastName: body.lastName.charAt(0).toUpperCase() + body.lastName.slice(1),
                 email: body.email,
                 password: hashPassword
+            })
+        }
+
+        static getUserDetailsById(id) {
+            return this.findOne({
+                where: {
+                    id: id
+                },
+                attributes: ['id', 'firstName', 'lastName', 'email']
             })
         }
     }

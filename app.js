@@ -155,19 +155,30 @@ app.post('/login', passport.authenticate('local', {
 app.get('/dashboard', isLoggedIn, async (req, res) => {
     console.log("Get Dashboard")
     if (req.user.admin) {
-        let sessions = await Session.findAll();
-        const sports = await Sport.findAll();
-        sessions.forEach(session => {
-            session.dataValues.date = moment(session.dataValues.date).format('MMMM Do YYYY, h:mm a');
-        })
+        const createdSessions = await Session.getCreatedSessions(req.user.id)
+        const createdSports=[]
+        for (let i = 0; i < createdSessions.length; i++) {
+            const sport= await Sport.getSport(createdSessions[i].sportId)
+            createdSports.push(sport.dataValues.sport)
+        }
+        const joinedSessions = await Session.joinedSessions(req.user.id)
+        const joinedSports=[]
+        for (let i = 0; i < joinedSessions.length; i++) {
+            const sport= await Sport.getSport(joinedSessions[i].sportId)
+            joinedSports.push(sport.dataValues.sport)
+        }
         res.render('dashboard', {
             csrfToken: req.csrfToken(),
             title: 'Dashboard',
-            // sports: sports,
-            // sessions: sessions
+            createdSessions: createdSessions.map(session => session.dataValues),
+            createdSports: createdSports,
+            joinedSessions: joinedSessions.map(session => session.dataValues),
+            joinedSports: joinedSports,
+            dashboard: true
+
         })
     } else {
-        res.render('player', {
+        res.render('dashboard', {
             csrfToken: req.csrfToken(),
             title: 'Dashboard'
         });
@@ -183,6 +194,7 @@ app.get('/sports', isLoggedIn, async (req, res) => {
         sports: sports.map(sport => sport.dataValues.sport)
     });
 });
+
 app.get('/sports/new-sport', isAdmin, (req, res) => {
     console.log("Get New Sport")
     res.render('new-sport', {
@@ -210,7 +222,8 @@ app.get('/sports/:sport', isLoggedIn, async (req, res) => {
         title: `${req.params.sport} Sessions`,
         sport: req.params.sport,
         oldSessions: oldSessions.map(session => session.dataValues),
-        newSessions: newSessions.map(session => session.dataValues)
+        newSessions: newSessions.map(session => session.dataValues),
+        dashboard: false
     })
 });
 
@@ -226,16 +239,67 @@ app.get('/sports/:sport/new-session', isLoggedIn, async (req, res) => {
 app.post('/sports/:sport/new-session', isLoggedIn, async (req, res) => {
     console.log("Post New Session")
     try {
-        const sportId = (await Sport.findOne({
-            where: {
-                sport: req.params.sport
-            }
-        })).dataValues.id
+        let sportId = await Sport.getSportId(req.params.sport)
+        sportId = sportId.dataValues.id
         await Session.createNewSession(req.user.id, req.body, sportId)
-        res.redirect('/dashboard')
+        res.redirect('/sports/' + req.params.sport)
     } catch (error) {
         console.log(error)
     }
+});
+
+app.get('/sports/:sport/:id', isLoggedIn, async (req, res) => {
+    console.log(`Get ${req.params.sport} #${req.params.id} Session Info`)
+    const info = await Session.getSessionById(req.params.id)
+    const membersId = await Session.getAllMembersId(req.params.id)
+    let members = []
+    for (let i = 0; i < membersId.length; i++) {
+        const member = await User.getUserDetailsById(membersId[i])
+        members.push(member.dataValues)
+    }
+    res.render('session-info', {
+        csrfToken: req.csrfToken(),
+        title: `${req.params.sport} #${req.params.id} Session`,
+        sport: req.params.sport,
+        id: req.params.id,
+        session: info.dataValues,
+        members: members,
+        userId: req.user.id,
+        old: (info.dataValues.date < new Date())
+    })
+});
+
+app.get('/sports/:sport/:id/:job', isLoggedIn, async (req, res) => {
+    if (await Session.getSessionDate(req.params.id) < new Date()) {
+        res.redirect('/sports/' + req.params.sport + '/' + req.params.id)
+        return
+    }
+    let membersId = await Session.getAllMembersId(req.params.id)
+    let required = await Session.getRequired(req.params.id)
+    if (req.params.job === "join-session") {
+        if (membersId.includes(req.user.id)) {
+            res.redirect('/sports/' + req.params.sport + '/' + req.params.id)
+            return
+        }
+        membersId.push(req.user.id)
+        membersId.sort()
+        required = required - membersId.length
+        await Session.joinSession(req.params.id, membersId, required)
+    } else if (req.params.job === "leave") {
+        if (!membersId.includes(req.user.id)) {
+            res.redirect('/sports/' + req.params.sport + '/' + req.params.id)
+            return
+        }
+        const index = membersId.indexOf(req.user.id);
+        membersId.splice(index, 1);
+        membersId.sort()
+        required = required + 1
+        await Session.joinSession(req.params.id, membersId, required)
+    } else {
+        res.redirect('/sports/' + req.params.sport + '/' + req.params.id)
+        return
+    }
+    res.redirect('/sports/' + req.params.sport + '/' + req.params.id)
 });
 
 
@@ -250,7 +314,7 @@ app.get("/logout", (req, res, next) => {
             console.log(error);
             return next(error);
         }
-        return res.redirect("/");
+        res.redirect("/");
     });
 });
 

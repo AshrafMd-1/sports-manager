@@ -28,6 +28,16 @@ module.exports = (sequelize, DataTypes) => {
             });
         }
 
+        static getSport(id) {
+            return this.findOne({
+                where: {
+                    id: id
+                },
+                attributes: ['sport']
+            });
+        }
+
+
         static createNewSport(userId, sport) {
             return this.create({
                 sport,

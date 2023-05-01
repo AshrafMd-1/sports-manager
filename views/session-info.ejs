@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="<%= csrfToken %>" name="_csrf">
+    <title><%= title %></title>
+    <link href="../../css/dashboard.css" rel="stylesheet">
+    <link href="../../css/nav.css" rel="stylesheet">
+    <link href="../../css/sessions.css" rel="stylesheet">
+</head>
+<body>
+<%- include("nav.ejs") %>
+<main>
+    <div class="breadcrumb">
+        <ul>
+            <li><a href="/sports">Sports</a></li>
+            <li>/</li>
+            <li><a href="/sports/<%= sport %>"><%= sport %></a></li>
+            <li>/</li>
+            <li><a href="#">#<%= id %></a></li>
+        </ul>
+    </div>
+    <div class="intro">
+        <h1><%= sport %> #<%= id %></h1>
+        <div class="buttons">
+            <% if(!old){ %>
+                <a href="/sports/<%= sport %>/<%= id %>/join-session" class="join">Join Session</a>
+            <% } %>
+            <a href="/sports/<%= sport %>" class="cancel">Cancel</a>
+        </div>
+    </div>
+    <div class="session-info">
+        <div class="info-text">
+            <div class="info-part">
+                <span class="info-key">Location:</span>
+                <span class="info-value"><%= session.location %></span>
+            </div>
+            <div class="info-part">
+                <span class="info-key">Date:</span>
+                <span class="info-value"><%= new Date(session.date).toISOString().slice(0, 10) %></span>
+            </div>
+            <div class="info-part">
+                <span class="info-key">Time:</span>
+                <span class="info-value"><%= new Date(session.date).toISOString().slice(11, 16) %></span>
+            </div>
+            <div class="info-part">
+                <span class="info-key">Required:</span>
+                <% if(Number(session.required) === 0){ %>
+                    <span class="full">Full</span>
+                <% }else{ %>
+                    <span class="info-value"><%= session.required %></span>
+                <% } %>
+            </div>
+        </div>
+        <div class="info-members">
+            <span class="info-key">Members</span>
+            <div class="members">
+                <% for(let i = 0;i < members.length;i++){ %>
+                    <div class="member">
+                        <div class="member-text">
+                            <span class="member-key">ID:</span>
+                            <span class="member-value"><%= members[i].id %></span>
+                        </div>
+                        <div class="member-text">
+                            <span class="member-key">First Name:</span>
+                            <span class="member-value"><%= members[i].firstName %></span>
+                        </div>
+                        <div class="member-text">
+                            <span class="member-key">Last Name:</span>
+                            <span class="member-value"><%= members[i].lastName %></span>
+                        </div>
+                        <div class="member-text">
+                            <span class="member-key">email:</span>
+                            <span class="member-value"><%= members[i].email %></span>
+                        </div>
+                        <% if(userId === members[i].id && !old ){ %>
+                            <div class="member-text">
+                                <a href="/sports/<%= sport %>/<%= id %>/leave" class="leave">Leave Session</a>
+                            </div>
+                        <% } %>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

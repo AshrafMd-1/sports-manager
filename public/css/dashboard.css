@@ -50,7 +50,7 @@ main div > h1 {
     text-decoration: underline;
 }
 
-.new-sport,.add,.cancel,.new-session,.view-session {
+.new-sport,.add,.cancel,.new-session,.view-session,.join,.leave{
     border: 1px solid #333;
     border-radius: 12px;
     margin: 10px;
@@ -63,19 +63,19 @@ main div > h1 {
     text-decoration: none;
 }
 
-.new-sport:hover,.add:hover,.cancel:hover,.new-session:hover,.view-session:hover {
+.new-sport:hover,.add:hover,.cancel:hover,.new-session:hover,.view-session:hover,.join:hover,.leave:hover{
     font-size: 19px;
 }
 
-.view-session{
+.view-session,.leave{
     padding:6px;
 }
 
-.view-session:hover{
+.view-session:hover,.leave:hover{
     padding:8px;
 }
 
-.no-sessions{
+.no-sessions,.full{
     font-size: 20px;
     font-weight: 600;
     color: #ff0000;

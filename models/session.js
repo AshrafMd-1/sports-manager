@@ -43,6 +43,11 @@ module.exports = (sequelize, DataTypes) => {
             });
         }
 
+
+        static getSessionById(id) {
+            return this.findByPk(id)
+        }
+
         static createNewSession(userId, body, sportId) {
             const dateBody = body.date.split('-').map((item) => parseInt(item));
             const timeBody = body.time.split(':').map((item) => parseInt(item));
@@ -60,6 +65,50 @@ module.exports = (sequelize, DataTypes) => {
                 location: body.location,
                 date: body.date,
                 required: body.required
+            })
+        }
+
+
+        static async getCreatedSessions(userId) {
+            const session = await this.findAll({
+                where: {
+                    userId: userId
+                },
+            })
+            return session.filter((item) => new Date(item.dataValues.date) > new Date())
+        }
+
+        static async joinedSessions(userId) {
+            const session = await this.findAll({
+                where: {
+                    membersId: {
+                        [Op.contains]: [userId]
+                    }
+                },
+            })
+            return session.filter((item) => new Date(item.dataValues.date) > new Date())
+        }
+
+        static async getAllMembersId(sessionId) {
+            const session = await this.getSessionById(sessionId)
+            return session.membersId
+        }
+
+        static async getSessionDate(sessionId) {
+            const session = await this.getSessionById(sessionId)
+            return session.date
+        }
+
+        static async getRequired(sessionId) {
+            const session = await this.getSessionById(sessionId)
+            return session.required
+        }
+
+        static async joinSession(sessionId, membersId, required) {
+            const session = await this.getSessionById(sessionId)
+            return session.update({
+                membersId: membersId,
+                required: required
             })
         }
     }

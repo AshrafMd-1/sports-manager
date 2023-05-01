@@ -5,38 +5,49 @@
             <h1 class="no-sessions">No sessions found</h1>
         </div>
     </div>
-<% } else{%>
-
-<div class="sessions">
-    <h1><%= title %></h1>
-    <% for(let i = 0;i < session.length;i++){ %>
-        <div class="session">
-            <div class="session-header">
-                <div class="session-part">
-                    <span class="key"><%= sport %></span>
-                    <span class="value">#<%= session[i].id %></span>
+<% } else{ %>
+    <div class="sessions">
+        <h1><%= title %></h1>
+        <% for(let i = 0;i < session.length;i++){ %>
+            <div class="session">
+                <div class="session-header">
+                    <div class="session-part">
+                        <% if(dashboard){ %>
+                            <span class="key"><%= sport[i] %></span>
+                        <% }else{ %>
+                            <span class="key"><%= sport %></span>
+                        <% } %>
+                        <span class="value">#<%= session[i].id %></span>
+                    </div>
+                    <% if(dashboard){ %>
+                        <a href="/sports/<%= sport[i] %>/<%= session[i].id %>" class="view-session">View</a>
+                    <% }else{ %>
+                        <a href="/sports/<%= sport %>/<%= session[i].id %>" class="view-session">View</a>
+                    <% } %>
                 </div>
-                <a href="/sports/<%= sport %>/<%= session[i].id %>" class="view-session">View</a>
+                <div class="session-text">
+                    <div class="session-part">
+                        <span class="key">Location:</span>
+                        <span class="value"><%= session[i].location %></span>
+                    </div>
+                    <div class="session-part">
+                        <span class="key">Date:</span>
+                        <span class="value"><%= new Date(session[i].date).toISOString().slice(0, 10) %></span>
+                    </div>
+                    <div class="session-part">
+                        <span class="key">Time:</span>
+                        <span class="value"><%= new Date(session[i].date).toISOString().slice(11, 16) %></span>
+                    </div>
+                    <div class="session-part">
+                        <span class="key">Required:</span>
+                        <% if(Number(session[i].required) === 0){ %>
+                            <span class="full">Full</span>
+                        <% }else{ %>
+                            <span class="value"><%= session[i].required %></span>
+                        <% } %>
+                    </div>
+                </div>
             </div>
-            <div class="session-text">
-                <div class="session-part">
-                    <span class="key">Location:</span>
-                    <span class="value"><%= session[i].location %></span>
-                </div>
-                <div class="session-part">
-                    <span class="key">Date:</span>
-                    <span class="value"><%= new Date(session[i].date).toISOString().slice(0, 10) %></span>
-                </div>
-                <div class="session-part">
-                    <span class="key">Time:</span>
-                    <span class="value"><%= new Date(session[i].date).toISOString().slice(11, 16) %></span>
-                </div>
-                <div class="session-part">
-                    <span class="key">Required:</span>
-                    <span class="value"><%= session[i].required %></span>
-                </div>
-            </div>
-        </div>
-    <% } %>
-</div>
+        <% } %>
+    </div>
 <% } %>
