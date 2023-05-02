@@ -18,27 +18,42 @@
         <div class="popular-group">
             <div class="popular-item">
                 <p class="key">Most Popular Sport</p>
-                <p class="value"><%= sportCount %></p>
+                <% if(sportCount){ %>
+                    <p class="value"><%= sportCount %></p>
+                <% }else{ %>
+                    <p class="empty">No Session</p>
+                <% } %>
             </div>
             <div class="popular-item">
                 <p class="key">Most Popular Month</p>
-                <p class="value"><%= sportDate %></p>
+                <% if(sportDate){ %>
+                    <p class="value"><%= sportDate %></p>
+                <% }else{ %>
+                    <p class="empty">No Date</p>
+                <% } %>
             </div>
             <div class="popular-item">
                 <p class="key">Most Active User</p>
-                <p class="value"><%= sportUser %></p>
+                <% if(sportUser){ %>
+                    <p class="value"><%= sportUser %></p>
+                <% }else{ %>
+                    <p class="empty">No User</p>
+                <% } %>
             </div>
         </div>
     </div>
     <div class="numbers">
         <h2>Number of sports sessions occurred</h2>
         <div class="number-group">
-            <% for(let i = 0;i < Object.keys(sportSessions).length;i++){ %>
-                <div class="number-item">
-                    <p class="key"><%= Object.keys(sportSessions)[i] %></p>
-                    <p class="value"><%= Object.values(sportSessions)[i] %></p>
-                </div>
-            <% } %>
+            <% if(Object.keys(sportSessions).length === 0){ %>
+                <p class="empty">No Sport</p>
+            <% } else{ %>
+                <% for(let i = 0;i < Object.keys(sportSessions).length;i++){ %>
+                    <div class="number-item">
+                        <p class="key"><%= Object.keys(sportSessions)[i] %></p>
+                        <p class="value"><%= Object.values(sportSessions)[i] %></p>
+                    </div>
+            <% } } %>
         </div>
     </div>
 </main>

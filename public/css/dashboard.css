@@ -81,7 +81,7 @@ main div > h1 {
     padding: 8px;
 }
 
-.no-sessions, .full, .no-sports, .no-members {
+.no-sessions, .full, .no-sports, .no-members, .empty {
     font-size: 20px;
     font-weight: 600;
     color: #ff0000;
@@ -91,7 +91,7 @@ main div > h1 {
     align-items: center;
 }
 
-.full {
+.full, .empty {
     margin: 0;
 }
 
