@@ -209,6 +209,10 @@ app.post('/sports/new-sport', isAdmin, async (req, res) => {
 
 app.get('/sports/:sport', isLoggedIn, async (req, res) => {
     const sportId = await Sport.getSportId(req.params.sport)
+    if(!sportId){
+        res.redirect('/sports')
+        return
+    }
     const oldSessions = await Session.getOlderSessions(sportId.dataValues.id)
     const newSessions = await Session.getNewerSessions(sportId.dataValues.id)
     let admin = (req.user.admin)
@@ -225,6 +229,11 @@ app.get('/sports/:sport', isLoggedIn, async (req, res) => {
 });
 
 app.get('/sports/:sport/new-session', isLoggedIn, async (req, res) => {
+    const sportId = await Sport.getSportId(req.params.sport)
+    if(!sportId){
+        res.redirect('/sports')
+        return
+    }
     let admin = (req.user.admin)
     res.render('new-session', {
         csrfToken: req.csrfToken(), title: `New ${req.params.sport} Session`, sport: req.params.sport, admin: admin
@@ -234,6 +243,10 @@ app.get('/sports/:sport/new-session', isLoggedIn, async (req, res) => {
 app.post('/sports/:sport/new-session', isLoggedIn, async (req, res) => {
     try {
         let sportId = await Sport.getSportId(req.params.sport)
+        if(!sportId){
+            res.redirect('/sports')
+            return
+        }
         sportId = sportId.dataValues.id
         await Session.createNewSession(req.user.id, req.body, sportId)
         res.redirect('/sports/' + req.params.sport)
@@ -243,7 +256,12 @@ app.post('/sports/:sport/new-session', isLoggedIn, async (req, res) => {
 });
 
 app.get('/sports/:sport/:id', isLoggedIn, async (req, res) => {
-    const info = await Session.getSessionById(req.params.id)
+    const sportId = await Sport.getSportId(req.params.sport)
+    const session = await Session.getSessionById(req.params.id)
+    if(!sportId || !session){
+        res.redirect('/sports')
+        return
+    }
     const membersId = await Session.getAllMembersId(req.params.id)
     let members = []
     for (let i = 0; i < membersId.length; i++) {
@@ -256,15 +274,21 @@ app.get('/sports/:sport/:id', isLoggedIn, async (req, res) => {
         title: `${req.params.sport} #${req.params.id} Session`,
         sport: req.params.sport,
         id: req.params.id,
-        session: info.dataValues,
+        session: session.dataValues,
         members: members,
         userId: req.user.id,
-        old: (info.dataValues.date < new Date()),
+        old: (session.dataValues.date < new Date()),
         admin: admin
     })
 });
 
 app.get('/sports/:sport/:id/:job', isLoggedIn, async (req, res) => {
+    const sportId = await Sport.getSportId(req.params.sport)
+    const session = await Session.getSessionById(req.params.id)
+    if(!session||!sportId){
+        res.redirect('/sports')
+        return
+    }
     if (await Session.getSessionDate(req.params.id) < new Date()) {
         res.redirect('/sports/' + req.params.sport + '/' + req.params.id)
         return
