@@ -15,9 +15,13 @@ nav {
     border-radius: 10px;
 }
 
+.logo a {
+    text-decoration: none;
+    display: flex;
+}
+
 .logo img {
     width: 25px;
-
 }
 
 .logo h1 {
