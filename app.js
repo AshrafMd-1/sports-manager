@@ -45,15 +45,12 @@ passport.use(new LocalStrategy({
     })
         .then(async (user) => {
             if (!user) {
-                console.log("No User")
                 return done(null, false);
             }
             const result = await bcrypt.compare(password, user.password);
             if (result) {
-                console.log("Matched")
                 return done(null, user);
             } else {
-                console.log("Not Matched")
                 return done(null, false);
             }
         })
@@ -123,14 +120,12 @@ const monthString = (month) => {
 
 
 app.get('/', alreadyLoggedIn, async (req, res) => {
-    console.log("Get Homepage")
     res.render('homepage', {
         csrfToken: req.csrfToken(), title: 'Homepage'
     });
 });
 
 app.get('/signup', alreadyLoggedIn, (req, res) => {
-    console.log("Get Signup")
     res.render('signup', {
         csrfToken: req.csrfToken(), title: 'Signup'
     });
@@ -138,7 +133,6 @@ app.get('/signup', alreadyLoggedIn, (req, res) => {
 });
 
 app.post('/signup', async (req, res) => {
-    console.log("Post Signup")
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const role = (req.body.role.toLowerCase() === "admin");
     try {
@@ -150,7 +144,6 @@ app.post('/signup', async (req, res) => {
 });
 
 app.get('/login', alreadyLoggedIn, (req, res) => {
-    console.log("Get Login")
     res.render('login', {
         csrfToken: req.csrfToken(), title: 'Login'
     });
@@ -161,7 +154,6 @@ app.post('/login', passport.authenticate('local', {
 }));
 
 app.get('/dashboard', isLoggedIn, async (req, res) => {
-    console.log("Get Dashboard")
     let user = await User.getUserDetailsById(req.user.id)
     user = `${user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1)} ${user.lastName.charAt(0).toUpperCase() + user.lastName.slice(1)}`
     const createdSessions = await Session.getCreatedSessions(req.user.id)
@@ -192,7 +184,6 @@ app.get('/dashboard', isLoggedIn, async (req, res) => {
 });
 
 app.get('/sports', isLoggedIn, async (req, res) => {
-    console.log("Get Sports")
     const sports = await Sport.findAll();
     let admin = (req.user.admin)
     res.render('sports', {
@@ -201,7 +192,6 @@ app.get('/sports', isLoggedIn, async (req, res) => {
 });
 
 app.get('/sports/new-sport', isAdmin, (req, res) => {
-    console.log("Get New Sport")
     let admin = (req.user.admin)
     res.render('new-sport', {
         csrfToken: req.csrfToken(), title: 'New Sport', admin: admin
@@ -218,7 +208,6 @@ app.post('/sports/new-sport', isAdmin, async (req, res) => {
 });
 
 app.get('/sports/:sport', isLoggedIn, async (req, res) => {
-    console.log(`Get ${req.params.sport} Sport`)
     const sportId = await Sport.getSportId(req.params.sport)
     const oldSessions = await Session.getOlderSessions(sportId.dataValues.id)
     const newSessions = await Session.getNewerSessions(sportId.dataValues.id)
@@ -236,7 +225,6 @@ app.get('/sports/:sport', isLoggedIn, async (req, res) => {
 });
 
 app.get('/sports/:sport/new-session', isLoggedIn, async (req, res) => {
-    console.log(`Get New ${req.params.sport} Session`)
     let admin = (req.user.admin)
     res.render('new-session', {
         csrfToken: req.csrfToken(), title: `New ${req.params.sport} Session`, sport: req.params.sport, admin: admin
@@ -244,7 +232,6 @@ app.get('/sports/:sport/new-session', isLoggedIn, async (req, res) => {
 });
 
 app.post('/sports/:sport/new-session', isLoggedIn, async (req, res) => {
-    console.log("Post New Session")
     try {
         let sportId = await Sport.getSportId(req.params.sport)
         sportId = sportId.dataValues.id
@@ -256,7 +243,6 @@ app.post('/sports/:sport/new-session', isLoggedIn, async (req, res) => {
 });
 
 app.get('/sports/:sport/:id', isLoggedIn, async (req, res) => {
-    console.log(`Get ${req.params.sport} #${req.params.id} Session Info`)
     const info = await Session.getSessionById(req.params.id)
     const membersId = await Session.getAllMembersId(req.params.id)
     let members = []
@@ -312,7 +298,6 @@ app.get('/sports/:sport/:id/:job', isLoggedIn, async (req, res) => {
 });
 
 app.get("/report", isAdmin, async (req, res) => {
-    console.log("Get Report")
     let admin = (req.user.admin)
     let user = await User.getUserDetailsById(req.user.id)
     user = `${user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1)} ${user.lastName.charAt(0).toUpperCase() + user.lastName.slice(1)}`

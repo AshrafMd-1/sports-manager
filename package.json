@@ -2,12 +2,12 @@
   "name": "wd201_capstone",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "start:db:server": "sudo service postgresql start",
     "start:db:console": "sudo -i -u postgres && psql",
     "start:dev": "nodemon -e js,ejs",
-    "start:prod": "node server.js"
+    "start:prod": "node index.js"
   },
   "keywords": [],
   "author": "Ashraf Mohammed <21951A6612@iare.ac.in>",
