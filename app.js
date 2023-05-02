@@ -12,6 +12,7 @@ const session = require("express-session");
 
 const passport = require('passport');
 const LocalStrategy = require('passport-local')
+const {all} = require("express/lib/application");
 
 const app = express();
 
@@ -102,6 +103,24 @@ const isAdmin = (req, res, next) => {
         res.redirect('/login')
     }
 }
+
+const highestFinder = (value) => {
+    let high = 0
+    const values = Object.values(value)
+    for (let i = 0; i < values.length; i++) {
+        if (high < values[i]) {
+            high = values[i]
+        }
+    }
+    const index = Object.values(value).findIndex((num) => num === high)
+    return (Object.keys(value)[index])
+}
+
+const monthString = (month) => {
+    const monthConverter = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    return (monthConverter[month])
+}
+
 
 app.get('/', alreadyLoggedIn, async (req, res) => {
     console.log("Get Homepage")
@@ -292,6 +311,56 @@ app.get('/sports/:sport/:id/:job', isLoggedIn, async (req, res) => {
     res.redirect('/sports/' + req.params.sport + '/' + req.params.id)
 });
 
+app.get("/report", isAdmin, async (req, res) => {
+    console.log("Get Report")
+    let admin = (req.user.admin)
+    let user = await User.getUserDetailsById(req.user.id)
+    user = `${user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1)} ${user.lastName.charAt(0).toUpperCase() + user.lastName.slice(1)}`
+    const info = await Session.findAll()
+    let sportCount = {}
+    let sportDate = {}
+    let sportUser = {}
+
+    for (let i = 0; i < info.length; i++) {
+
+        const sport = await Sport.getSport(info[i].dataValues.sportId)
+        if (sportCount[sport.dataValues.sport] === undefined) {
+            sportCount[sport.dataValues.sport] = 1
+        } else {
+            sportCount[sport.dataValues.sport] += 1
+        }
+
+        if (sportDate[monthString(new Date(info[i].dataValues.date).getMonth())] === undefined) {
+            sportDate[monthString(new Date(info[i].dataValues.date).getMonth())] = 1
+        } else {
+            sportDate[monthString(new Date(info[i].dataValues.date).getMonth())] += 1
+        }
+
+        let user = await User.getUserDetailsById(info[i].dataValues.userId)
+        user = `${user.dataValues.firstName.charAt(0).toUpperCase() + user.dataValues.firstName.slice(1)} ${user.dataValues.lastName.charAt(0).toUpperCase() + user.dataValues.lastName.slice(1)}`
+        if (sportUser[user] === undefined) {
+            sportUser[user] = 1
+        } else {
+            sportUser[user] += 1
+        }
+
+    }
+    let sportSessions = sportCount
+    sportCount = highestFinder(sportCount)
+    sportDate = highestFinder(sportDate)
+    sportUser = highestFinder(sportUser)
+    res.render('report', {
+        csrfToken: req.csrfToken(),
+        title: 'Report',
+        admin: admin,
+        user: user,
+        sportCount: sportCount,
+        sportDate: sportDate,
+        sportUser: sportUser,
+        sportSessions: sportSessions
+    });
+});
+
 app.get("/logout", (req, res, next) => {
     req.logout((error) => {
         if (error) {
@@ -299,16 +368,6 @@ app.get("/logout", (req, res, next) => {
             return next(error);
         }
         res.redirect("/");
-    });
-});
-
-app.get("/report", isAdmin, async (req, res) => {
-    console.log("Get Report")
-    let admin = (req.user.admin)
-    let user = await User.getUserDetailsById(req.user.id)
-    user = `${user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1)} ${user.lastName.charAt(0).toUpperCase() + user.lastName.slice(1)}`
-    res.render('report', {
-        csrfToken: req.csrfToken(), title: 'Report', admin: admin, user: user
     });
 });
 

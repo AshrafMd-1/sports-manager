@@ -31,10 +31,10 @@ nav {
 }
 
 
-.home a{
+.home a {
     text-decoration: none;
     color: #565656;
-transition: font-size 0.3s;
+    transition: font-size 0.3s;
     font-size: 1.4em
 }
 
@@ -42,7 +42,7 @@ transition: font-size 0.3s;
     color: #000000;
     text-shadow: 0 0 1px #000000;
     text-decoration: underline;
-     font-size: 1.6em;
+    font-size: 1.6em;
 }
 
 
@@ -152,7 +152,7 @@ a {
 }
 
 a:hover {
-color: #000000;
+    color: #000000;
     text-shadow: 0 0 1px #000000;
     text-decoration: underline;
     font-size: 24px;

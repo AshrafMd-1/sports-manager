@@ -14,9 +14,9 @@
 <main>
     <div class="intro">
         <h1>Sports</h1>
-        <%if(admin){%>
-        <a href="/sports/new-sport" class="new-sport">New Sport</a>
-        <%}%>
+        <% if(admin){ %>
+            <a href="/sports/new-sport" class="new-sport">New Sport</a>
+        <% } %>
     </div>
     <div class="sports">
         <% if(sports.length === 0){ %>

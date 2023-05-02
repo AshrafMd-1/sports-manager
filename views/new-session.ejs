@@ -16,18 +16,18 @@
         <ul>
             <li><a href="/sports">Sports</a></li>
             <li>/</li>
-            <li><a href="/sports/<%= sport%>"><%= sport%></a></li>
+            <li><a href="/sports/<%= sport %>"><%= sport %></a></li>
             <li>/</li>
             <li><a href="#">New-Session</a></li>
         </ul>
     </div>
     <div class="intro">
-        <h1>Add New Session For <%=sport%></h1>
+        <h1>Add New Session For <%= sport %></h1>
         <div class="buttons">
-            <a href="/sports/<%=sport%>" class="cancel">Cancel</a>
+            <a href="/sports/<%= sport %>" class="cancel">Cancel</a>
         </div>
     </div>
-    <form id="new-Session" action="/sports/<%=sport%>/new-session" method="post">
+    <form id="new-Session" action="/sports/<%= sport %>/new-session" method="post">
         <input name="_csrf" type="hidden" value="<%= csrfToken %>">
         <div class="form-group">
             <label for="location">Location</label>

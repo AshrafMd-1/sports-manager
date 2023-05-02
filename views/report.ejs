@@ -18,33 +18,27 @@
         <div class="popular-group">
             <div class="popular-item">
                 <p class="key">Most Popular Sport</p>
-                <p class="value">Cricket</p>
+                <p class="value"><%= sportCount %></p>
             </div>
             <div class="popular-item">
-                <p class="key">Highest number of sports during a specific day</p>
-                <p class="value">Hockey</p>
+                <p class="key">Most Popular Month</p>
+                <p class="value"><%= sportDate %></p>
             </div>
             <div class="popular-item">
-                <p class="key">Highest number of players</p>
-                <p class="value">Football</p>
+                <p class="key">Most Active User</p>
+                <p class="value"><%= sportUser %></p>
             </div>
         </div>
     </div>
     <div class="numbers">
         <h2>Number of sports sessions occurred</h2>
         <div class="number-group">
-            <div class="number-item">
-                <p class="key">Cricket</p>
-                <p class="value">10</p>
-            </div>
-            <div class="number-item">
-                <p class="key">Football</p>
-                <p class="value">10</p>
-            </div>
-            <div class="number-item">
-                <p class="key">Hockey</p>
-                <p class="value">10</p>
-            </div>
+            <% for(let i = 0;i < Object.keys(sportSessions).length;i++){ %>
+                <div class="number-item">
+                    <p class="key"><%= Object.keys(sportSessions)[i] %></p>
+                    <p class="value"><%= Object.values(sportSessions)[i] %></p>
+                </div>
+            <% } %>
         </div>
     </div>
 </main>

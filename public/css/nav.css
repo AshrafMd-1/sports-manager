@@ -50,3 +50,11 @@ nav {
     color: #000;
     text-decoration: underline;
 }
+
+
+#logout a {
+    color: #565656;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+}
