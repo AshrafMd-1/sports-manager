@@ -1,0 +1,60 @@
+.main div {
+    margin: 10px 0;
+}
+
+.popularity, .numbers {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 25px 10px;
+}
+
+.popular-group, .number-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.popular-item, .number-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 200px;
+    height: 100px;
+    border-radius: 10px;
+    background-color: #f6f6f6;
+    margin: 10px 10px;
+    padding: 15px 20px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+.number-item {
+    width: 100px;
+    height: 50px;
+}
+
+.key {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: #545454;
+    margin: 0 5px;
+    padding: 1px;
+}
+
+.value {
+    font-size: 20px;
+    font-weight: 600;
+    color: #000000;
+    margin: 1px 5px;
+    padding: 1px;
+}
+
+

@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
             })
         }
 
+
         static getUserDetailsById(id) {
             return this.findOne({
                 where: {

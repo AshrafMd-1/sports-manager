@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="<%= csrfToken %>" name="_csrf">
+    <title><%= title %></title>
+    <link href="./css/dashboard.css" rel="stylesheet">
+    <link href="./css/report.css" rel="stylesheet">
+    <link href="./css/nav.css" rel="stylesheet">
+</head>
+<body>
+<%- include("nav.ejs",{admin:admin}) %>
+<main>
+    <h1>Here is the report, <span class="user"><%= user %></span></h1>
+    <div class="popularity">
+        <h2>Popularity</h2>
+        <div class="popular-group">
+            <div class="popular-item">
+                <p class="key">Most Popular Sport</p>
+                <p class="value">Cricket</p>
+            </div>
+            <div class="popular-item">
+                <p class="key">Highest number of sports during a specific day</p>
+                <p class="value">Hockey</p>
+            </div>
+            <div class="popular-item">
+                <p class="key">Highest number of players</p>
+                <p class="value">Football</p>
+            </div>
+        </div>
+    </div>
+    <div class="numbers">
+        <h2>Number of sports sessions occurred</h2>
+        <div class="number-group">
+            <div class="number-item">
+                <p class="key">Cricket</p>
+                <p class="value">10</p>
+            </div>
+            <div class="number-item">
+                <p class="key">Football</p>
+                <p class="value">10</p>
+            </div>
+            <div class="number-item">
+                <p class="key">Hockey</p>
+                <p class="value">10</p>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

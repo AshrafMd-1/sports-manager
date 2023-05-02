@@ -143,6 +143,8 @@ app.post('/login', passport.authenticate('local', {
 
 app.get('/dashboard', isLoggedIn, async (req, res) => {
     console.log("Get Dashboard")
+    let user = await User.getUserDetailsById(req.user.id)
+    user = `${user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1)} ${user.lastName.charAt(0).toUpperCase() + user.lastName.slice(1)}`
     const createdSessions = await Session.getCreatedSessions(req.user.id)
     const createdSports = []
     for (let i = 0; i < createdSessions.length; i++) {
@@ -164,6 +166,7 @@ app.get('/dashboard', isLoggedIn, async (req, res) => {
         createdSports: createdSports,
         joinedSessions: joinedSessions.map(session => session.dataValues),
         joinedSports: joinedSports,
+        user: user,
         dashboard: dashboard,
         admin: admin
     });
@@ -296,6 +299,16 @@ app.get("/logout", (req, res, next) => {
             return next(error);
         }
         res.redirect("/");
+    });
+});
+
+app.get("/report", isAdmin, async (req, res) => {
+    console.log("Get Report")
+    let admin = (req.user.admin)
+    let user = await User.getUserDetailsById(req.user.id)
+    user = `${user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1)} ${user.lastName.charAt(0).toUpperCase() + user.lastName.slice(1)}`
+    res.render('report', {
+        csrfToken: req.csrfToken(), title: 'Report', admin: admin, user: user
     });
 });
 
