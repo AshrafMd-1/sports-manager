@@ -1,6 +1,7 @@
 body {
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
 }
 
 main {
@@ -56,7 +57,7 @@ main div > h1 {
     text-decoration: underline;
 }
 
-.new-sport, .add, .cancel, .new-session, .view-session, .join, .leave {
+.new-sport, .add, .cancel, .new-session, .view-session, .join, .leave, .expel {
     border: 1px solid #333;
     border-radius: 12px;
     margin: 10px;
@@ -69,15 +70,15 @@ main div > h1 {
     text-decoration: none;
 }
 
-.new-sport:hover, .add:hover, .cancel:hover, .new-session:hover, .view-session:hover, .join:hover, .leave:hover {
+.new-sport:hover, .add:hover, .cancel:hover, .new-session:hover, .expel:hover, .view-session:hover, .join:hover, .leave:hover {
     font-size: 19px;
 }
 
-.view-session, .leave {
+.view-session, .leave, .expel {
     padding: 6px;
 }
 
-.view-session:hover, .leave:hover {
+.view-session:hover, .leave:hover, .expel:hover {
     padding: 8px;
 }
 
@@ -91,6 +92,7 @@ main div > h1 {
     align-items: center;
 }
 
+
 .full, .empty {
     margin: 0;
 }
@@ -99,4 +101,52 @@ main div > h1 {
     font-size: 25px;
     display: block;
     margin: 0 auto;
+}
+
+
+.notify {
+    display: block;
+    position: absolute;
+    font-size: 20px;
+    width: 100vw;
+    top: 44px;
+}
+
+.notify .error p, .notify .success p, .notify .info p {
+    border-radius: 5px 0 0 5px;
+    margin-left: auto;
+    padding: 5px 6px 5px 12px;
+    box-sizing: border-box;
+    word-break: break-word;
+    width: 275px;
+    height: fit-content;
+    color: white;
+    text-align: left;
+    animation: flash 1s both ease-in-out 3.5s;
+}
+
+.notify .error p {
+    background-color: #d07676;
+}
+
+.notify .success p {
+    background-color: #7ace62;
+}
+
+.notify .info p {
+    background-color: #6a6ac5;
+}
+
+.notify > div {
+    margin: 0;
+    padding: 0;
+}
+
+@keyframes flash {
+    0% {
+        margin-right: 0;
+    }
+    100% {
+        margin-right: -300px;
+    }
 }

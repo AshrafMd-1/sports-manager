@@ -1,0 +1,6 @@
+#1 complete all flash messages
+#2 take inputs of members both verifies and unverified
+#3 refactoring of code
+#4 add report changes based on time
+#5 add a weather report during session addition
+#6 add test

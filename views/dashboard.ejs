@@ -11,10 +11,11 @@
 </head>
 <body>
 <%- include("nav.ejs",{admin:admin}) %>
+<%- include("notification.ejs") %>
 <main>
     <h1>Welcome back, <span class="user"><%= user %></span></h1>
-    <%- include("session-template.ejs",{title:"Joined Sessions",sport:joinedSports,session:joinedSessions,dashboard:dashboard}) %>
-    <%- include("session-template.ejs",{title:"Created Sessions",sport:createdSports,session:createdSessions,dashboard:dashboard}) %>
+    <%- include("session-template.ejs",{title:"Joined Sessions",session:joinedSessions,displayPrompt:displayPrompt}) %>
+    <%- include("session-template.ejs",{title:"Created Sessions",session:createdSessions,displayPrompt:displayPrompt}) %>
 </main>
 </body>
 </html>

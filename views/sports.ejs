@@ -11,6 +11,7 @@
 </head>
 <body>
 <%- include("nav.ejs",{admin:admin}) %>
+<%- include("notification.ejs") %>
 <main>
     <div class="intro">
         <h1>Sports</h1>
@@ -23,10 +24,15 @@
             <h1 class="no-sports">No sports found</h1>
         <% }else{ %>
             <% for(let i = 0;i < sports.length;i++){ %>
-                <a href="/sports/<%= sports[i] %>">
+                <a href="/sports/<%= sports[i].sport %>">
                     <div class="sport">
-                        <h2><%= sports[i] %></h2>
+                        <h2><%= sports[i].sport %></h2>
+                        <div class="detail">
+                            <span class="key">Created:</span>
+                            <span class="value"><%= sports[i].user %></span>
+                        </div>
                     </div>
+
                 </a>
         <% }} %>
     </div>

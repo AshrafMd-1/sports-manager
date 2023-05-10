@@ -1,0 +1,24 @@
+<div class="notify">
+    <div class="error">
+        <% if(messages && messages.error && messages.error.length > 0)  { %>
+            <% for(var i = 0; i < messages.error.length; i++) { %>
+                <p> <%= messages.error[i] %></p>
+            <% } %>
+        <% } %>
+    </div>
+    <div class="success">
+        <% if(messages && messages.success && messages.success.length > 0)  { %>
+            <% for(var i = 0; i < messages.success.length; i++) { %>
+                <p> <%= messages.success[i] %></p>
+            <% } %>
+        <% } %>
+
+    </div>
+    <div class="info">
+        <% if(messages && messages.info && messages.info.length > 0)  { %>
+            <% for(var i = 0; i < messages.info.length; i++) { %>
+                <p> <%= messages.info[i] %></p>
+            <% } %>
+        <% } %>
+    </div>
+</div>

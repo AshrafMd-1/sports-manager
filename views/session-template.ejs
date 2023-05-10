@@ -12,18 +12,16 @@
             <div class="session">
                 <div class="session-header">
                     <div class="session-part">
-                        <% if(dashboard){ %>
-                            <span class="key"><%= sport[i] %></span>
-                        <% }else{ %>
-                            <span class="key"><%= sport %></span>
-                        <% } %>
+                        <span class="key"><%= session[i].sport %></span>
                         <span class="value">#<%= session[i].id %></span>
+                        <% if(displayPrompt){ %>
+                            <span>[ joined ]</span>
+                        <% } %>
                     </div>
-                    <% if(dashboard){ %>
-                        <a href="/sports/<%= sport[i] %>/<%= session[i].id %>" class="view-session">View</a>
-                    <% }else{ %>
-                        <a href="/sports/<%= sport %>/<%= session[i].id %>" class="view-session">View</a>
+                    <% if(displayPrompt){ %>
+                        <p class="status">Upcoming</p>
                     <% } %>
+                    <a href="/sports/<%= session[i].sport %>/<%= session[i].id %>" class="view-session">View</a>
                 </div>
                 <div class="session-text">
                     <div class="session-part">
@@ -45,6 +43,10 @@
                         <% }else{ %>
                             <span class="value"><%= session[i].required %></span>
                         <% } %>
+                    </div>
+                    <div class="session-part">
+                        <span class="key">Created:</span>
+                        <span class="value"><%= session[i].user %></span>
                     </div>
                 </div>
             </div>

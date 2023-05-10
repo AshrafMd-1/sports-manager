@@ -17,8 +17,8 @@ module.exports = {
                 type: Sequelize.DATE,
                 allowNull: false
             },
-            membersId: {
-                type: Sequelize.ARRAY(Sequelize.INTEGER),
+            membersList: {
+                type: Sequelize.ARRAY(Sequelize.STRING),
                 allowNull: false,
                 defaultValue: []
             },

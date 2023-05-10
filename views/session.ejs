@@ -1,8 +1,6 @@
 <!doctype html>
 <html lang="en">
 <head>
-
-
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <meta content="<%= csrfToken %>" name="_csrf">
@@ -13,6 +11,7 @@
 </head>
 <body>
 <%- include("nav.ejs",{admin:admin}) %>
+<%- include("notification.ejs") %>
 <main>
     <div class="breadcrumb">
         <ul>
@@ -25,8 +24,8 @@
         <h1><%= sport %></h1>
         <a href="/sports/<%= sport %>/new-session" class="new-session">New Session</a>
     </div>
-    <%- include("session-template.ejs",{title:"Upcoming sessions",sport:sport,session:newSessions}) %>
-    <%- include("session-template.ejs",{title:"Old sessions",sport:sport,session:oldSessions}) %>
+    <%- include("session-template.ejs",{title:"Upcoming sessions",session:newSessions,displayPrompt:displayPrompt}) %>
+    <%- include("session-template.ejs",{title:"Old sessions",session:oldSessions,displayPrompt:displayPrompt}) %>
 </main>
 </body>
 </html>

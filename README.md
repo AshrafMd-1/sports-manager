@@ -1,4 +1,3 @@
-
 # Sport Dash
 
 A simple application for scheduling of sports by different users

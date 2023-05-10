@@ -31,25 +31,96 @@ module.exports = (sequelize, DataTypes) => {
         }
 
 
-        static getUserDetailsById(id) {
-            return this.findOne({
+        static async getUserDetailsById(id) {
+            const user = await this.findOne({
                 where: {
                     id: id
                 },
                 attributes: ['id', 'firstName', 'lastName', 'email']
             })
+            return user.dataValues
         }
+
+        static async getUserDetailsByName(name) {
+            const user = await this.findOne({
+                where: {
+                    firstName: name.charAt(0).toUpperCase() + name.slice(1)
+                },
+                attributes: ['id', 'firstName', 'lastName', 'email']
+            })
+            return user.dataValues
+        }
+
     }
 
     User.init({
-        admin: DataTypes.BOOLEAN,
-        firstName: DataTypes.STRING,
-        lastName: DataTypes.STRING,
-        email: DataTypes.STRING,
-        password: DataTypes.STRING
-    }, {
-        sequelize,
-        modelName: 'User',
-    });
+            admin: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+                allowNull: false,
+                validate: {
+                    notNull: {
+                        msg: 'Role is required'
+                    },
+                    notEmpty: {
+                        msg: 'Role is left empty'
+                    }
+                }
+            },
+            firstName: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                validate: {
+                    notNull: {
+                        msg: 'First name is required'
+                    },
+                    notEmpty: {
+                        msg: 'First name is left empty'
+                    }
+                }
+            },
+            lastName: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                validate: {
+                    notNull: {
+                        msg: 'Last name is required'
+                    }
+                },
+            },
+            email: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                unique: {
+                    args: true,
+                    msg: 'Email address already in use'
+                },
+                validate: {
+                    notNull: {
+                        msg: 'Email is required'
+                    },
+                    notEmpty: {
+                        msg: 'Email is left empty'
+                    }
+                },
+            },
+            password: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                validate: {
+                    notNull: {
+                        msg: 'Password is required'
+                    },
+                    notEmpty: {
+                        msg: 'Password is left empty'
+                    },
+                },
+            }
+        },
+        {
+            sequelize,
+            modelName: 'User',
+        }
+    );
     return User;
 };

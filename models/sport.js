@@ -19,22 +19,32 @@ module.exports = (sequelize, DataTypes) => {
             });
         }
 
-        static getSportId(sport) {
-            return this.findOne({
+        static async getSportId(sport) {
+            const sportId = await this.findOne({
                 where: {
                     sport: sport
                 },
                 attributes: ['id']
             });
+            if (!sportId) return reportError('Sport not found')
+            return sportId.dataValues.id
         }
 
-        static getSport(id) {
-            return this.findOne({
+        static async getAllSports() {
+            const sports = await this.findAll({
+                attributes: ['sport', 'userId']
+            });
+            return sports.map((item) => item.dataValues)
+        }
+
+        static async getSport(id) {
+            const sport = await this.findOne({
                 where: {
                     id: id
                 },
                 attributes: ['sport']
             });
+            return sport.dataValues.sport
         }
 
 
@@ -47,7 +57,22 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     Sport.init({
-        sport: DataTypes.STRING
+        sport: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: {
+                args: true,
+                msg: 'Sport already exists'
+            },
+            validate: {
+                notNull: {
+                    msg: 'Sport is required'
+                },
+                notEmpty: {
+                    msg: 'Sport is left empty'
+                },
+            }
+        }
     }, {
         sequelize,
         modelName: 'Sport',

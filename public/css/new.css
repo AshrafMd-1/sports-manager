@@ -28,7 +28,7 @@ form {
 }
 
 .form-group input {
-    width: 300px;
+    width: 330px;
     height: 23px;
     border: 1px solid #333;
     border-radius: 12px;
@@ -40,4 +40,13 @@ form {
 .form-group label {
     font-size: 20px;
     font-weight: 700;
+}
+
+
+.info {
+    color: #0051ff;
+    margin: 4px;
+    word-break: break-word;
+    width: 360px;
+    text-align: center;
 }

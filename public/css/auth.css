@@ -157,3 +157,11 @@ a:hover {
     text-decoration: underline;
     font-size: 24px;
 }
+
+.error {
+    color: #ff0a55;
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-align: center;
+    margin: 0;
+}

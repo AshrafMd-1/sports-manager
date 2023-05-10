@@ -11,6 +11,7 @@
 </head>
 <body>
 <%- include("nav.ejs") %>
+<%- include("notification.ejs") %>
 <main>
     <div class="breadcrumb">
         <ul>
@@ -36,6 +37,9 @@
             <input id="date" name="date" type="date" required>
             <label for="time">Time</label>
             <input id="time" name="time" type="time" required>
+            <label for="membersList">Members</label>
+            <span class="info">add '@' before a player's first name if he has an account</span>
+            <input id="membersList" name="membersList" type="text" placeholder="name1,name2,@name3...">
             <label for="required">Required</label>
             <input id="required" name="required" min="1" type="number" required>
             <button class="add" type="submit">Add</button>
