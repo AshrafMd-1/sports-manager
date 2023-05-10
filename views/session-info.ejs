@@ -47,11 +47,11 @@
                 <span class="info-value"><%= new Date(session[0].date).toISOString().slice(11, 16) %></span>
             </div>
             <div class="info-part">
-                <span class="info-key">Required:</span>
-                <% if(Number(session[0].required) === 0){ %>
+                <span class="info-key">remaining:</span>
+                <% if(Number(session[0].remaining) === 0){ %>
                     <span class="full">Full</span>
                 <% }else{ %>
-                    <span class="info-value"><%= session[0].required %></span>
+                    <span class="info-value"><%= session[0].remaining %></span>
                 <% } %>
             </div>
             <div class="info-part">

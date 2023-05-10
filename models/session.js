@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
                     },
                     sportId: sportId
                 },
-                attributes: ['id', 'location', 'date', 'required', 'sportId', "userId"]
+                attributes: ['id', 'location', 'date', 'remaining', 'sportId', "userId"]
             });
             return oldSession.map((item) => item.dataValues)
         }
@@ -42,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
                     },
                     sportId: sportId
                 },
-                attributes: ['id', 'location', 'date', 'required', 'sportId', "userId"]
+                attributes: ['id', 'location', 'date', 'remaining', 'sportId', "userId"]
             });
             return newSession.map((item) => item.dataValues)
         }
@@ -53,7 +53,7 @@ module.exports = (sequelize, DataTypes) => {
                 where: {
                     id: id
                 },
-                attributes: ['id', 'location', 'date', 'required', 'membersList', 'sportId', "userId"]
+                attributes: ['id', 'location', 'date', 'remaining', 'membersList', 'sportId', "userId"]
             })
             if (!session) return reportError('Session not found')
             return session.dataValues
@@ -78,7 +78,7 @@ module.exports = (sequelize, DataTypes) => {
                 location: body.location,
                 date: body.date,
                 membersList: membersList,
-                required: body.required
+                remaining: body.remaining
             })
         }
 
@@ -87,7 +87,7 @@ module.exports = (sequelize, DataTypes) => {
                 where: {
                     userId: userId
                 },
-                attributes: ['id', 'location', 'date', 'required', 'sportId', "userId"]
+                attributes: ['id', 'location', 'date', 'remaining', 'sportId', "userId"]
             })
             const session = sessions.filter((item) => new Date(item.dataValues.date) > new Date())
             return session.map((item) => item.dataValues)
@@ -100,7 +100,7 @@ module.exports = (sequelize, DataTypes) => {
                         [Op.contains]: [email]
                     }
                 },
-                attributes: ['id', 'location', 'date', 'required', 'sportId', "userId"]
+                attributes: ['id', 'location', 'date', 'remaining', 'sportId', "userId"]
             })
             const session = sessions.filter((item) => new Date(item.dataValues.date) > new Date())
             return session.map((item) => item.dataValues)
@@ -111,7 +111,7 @@ module.exports = (sequelize, DataTypes) => {
             session.membersList.push(email)
             return this.update({
                     membersList: session.membersList,
-                    required: session.required - 1,
+                    remaining: session.remaining - 1,
                 },
                 {
                     where: {
@@ -126,7 +126,7 @@ module.exports = (sequelize, DataTypes) => {
             session.membersList.splice(index, 1)
             return this.update({
                     membersList: session.membersList,
-                    required: session.required + 1,
+                    remaining: session.remaining + 1,
                 },
                 {
                     where: {
@@ -169,18 +169,18 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.ARRAY(DataTypes.STRING),
             allowNull: false,
         },
-        required: {
+        remaining: {
             type: DataTypes.INTEGER,
             allowNull: false,
             validate: {
                 isNumeric: {
-                    msg: "Required must be a number"
+                    msg: "remaining must be a number"
                 },
                 notNull: {
-                    msg: "Required is required"
+                    msg: "remaining is required"
                 },
                 notEmpty: {
-                    msg: "Required is left empty"
+                    msg: "remaining is left empty"
                 }
             }
         },

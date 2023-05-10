@@ -22,7 +22,7 @@ module.exports = {
                 allowNull: false,
                 defaultValue: []
             },
-            required: {
+            remaining: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
                 defaultValue: 0
