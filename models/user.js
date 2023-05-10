@@ -30,7 +30,6 @@ module.exports = (sequelize, DataTypes) => {
             })
         }
 
-
         static async getUserDetailsById(id) {
             const user = await this.findOne({
                 where: {
@@ -41,16 +40,15 @@ module.exports = (sequelize, DataTypes) => {
             return user.dataValues
         }
 
-        static async getUserDetailsByName(name) {
+        static async getUserDetailsByEmail(email) {
             const user = await this.findOne({
                 where: {
-                    firstName: name.charAt(0).toUpperCase() + name.slice(1)
+                    email: email
                 },
                 attributes: ['id', 'firstName', 'lastName', 'email']
             })
             return user.dataValues
         }
-
     }
 
     User.init({

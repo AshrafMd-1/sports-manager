@@ -6,8 +6,6 @@ const {
     sessionGenerator,
     capitalizeString,
     capitalizeName,
-    highestFinder,
-    monthString,
     sportGenerator
 } = require('./functions');
 
@@ -168,7 +166,7 @@ app.post('/login', passport.authenticate('local', {
 
 app.get('/dashboard', isLoggedIn, async (req, res) => {
     const user = capitalizeName(await User.getUserDetailsById(req.user.id))
-    const joinedSessions = await sessionGenerator(await Session.getJoinedSessions(`@` + req.user.firstName))
+    const joinedSessions = await sessionGenerator(await Session.getJoinedSessions(req.user.email))
     const createdSessions = await sessionGenerator(await Session.getCreatedSessions(req.user.id))
     const admin = (req.user.admin)
     res.render('dashboard', {
@@ -279,7 +277,7 @@ app.post('/sports/:sport/new-session', isLoggedIn, async (req, res) => {
 app.get('/sports/:sport/:id', isLoggedIn, async (req, res) => {
     try {
         await Sport.getSportId(req.params.sport)
-        const session = await sessionGenerator(await Session.getSessionById(req.params.id), true, false)
+        const session = await sessionGenerator(await Session.getSessionById(req.params.id), true)
         let admin = (req.user.admin)
         res.render('session-info', {
             csrfToken: req.csrfToken(),
@@ -308,14 +306,14 @@ app.get('/sports/:sport/:id/join', isLoggedIn, async (req, res) => {
                 `Session already over`,
             )
             res.redirect("/sports/" + req.params.sport + '/' + req.params.id);
-        } else if (session.membersList.includes(`@` + req.user.firstName)) {
+        } else if (session.membersList.includes(req.user.email)) {
             res.locals.messages = req.flash(
                 "info",
                 `Already joined the Session`,
             )
             res.redirect("/sports/" + req.params.sport + '/' + req.params.id);
         } else {
-            await Session.joinSession(`@` + req.user.firstName, req.params.id)
+            await Session.joinSession(req.user.email, req.params.id)
             res.locals.messages = req.flash(
                 "success",
                 `Joined the Session`,
@@ -348,7 +346,7 @@ app.get('/sports/:sport/:id/:index/leave', isLoggedIn, async (req, res) => {
                     `User not present in Session`,
                 )
                 res.redirect("/sports/" + req.params.sport + '/' + req.params.id);
-            } else if (session.userId === req.user.id || session.membersList.indexOf(`@` + req.user.firstName) === req.params.index) {
+            } else if (session.userId === req.user.id || session.membersList.indexOf(req.user.email) === Number(req.params.index)) {
                 await Session.leaveSession(req.params.index, req.params.id)
                 res.locals.messages = req.flash(
                     "success",
@@ -372,54 +370,6 @@ app.get('/sports/:sport/:id/:index/leave', isLoggedIn, async (req, res) => {
         }
     }
 )
-
-app.get("/report", isAdmin, async (req, res) => {
-    let admin = (req.user.admin)
-    let user = await User.getUserDetailsById(req.user.id)
-    user = `${user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1)} ${user.lastName.charAt(0).toUpperCase() + user.lastName.slice(1)}`
-    const info = await Session.getAllSessions()
-    let sportCount = {}
-    let sportDate = {}
-    let sportUser = {}
-
-    for (let i = 0; i < info.length; i++) {
-
-        const sport = await Sport.getSport(info[i].sportId)
-        if (sportCount[sport.sport] === undefined) {
-            sportCount[sport.sport] =
-                sportCount[sport.sport] += 1
-        }
-
-        if (sportDate[monthString(new Date(info[i].date).getMonth())] === undefined) {
-            sportDate[monthString(new Date(info[i].date).getMonth())] = 1
-        } else {
-            sportDate[monthString(new Date(info[i].date).getMonth())] += 1
-        }
-
-        let user = await User.getUserDetailsById(info[i].userId)
-        user = `${user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1)} ${user.lastName.charAt(0).toUpperCase() + user.lastName.slice(1)}`
-        if (sportUser[user] === undefined) {
-            sportUser[user] = 1
-        } else {
-            sportUser[user] += 1
-        }
-
-    }
-    let sportSessions = sportCount
-    sportCount = highestFinder(sportCount)
-    sportDate = highestFinder(sportDate)
-    sportUser = highestFinder(sportUser)
-    res.render('report', {
-        csrfToken: req.csrfToken(),
-        title: 'Report',
-        admin: admin,
-        user: user,
-        sportCount: sportCount,
-        sportDate: sportDate,
-        sportUser: sportUser,
-        sportSessions: sportSessions
-    });
-});
 
 app.get("/logout", (req, res, next) => {
     req.logout((error) => {

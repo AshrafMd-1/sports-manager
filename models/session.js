@@ -21,13 +21,6 @@ module.exports = (sequelize, DataTypes) => {
             });
         }
 
-        static async getAllSessions() {
-            const sessions = await this.findAll({
-                attributes: ['id', 'location', 'date', 'required', 'sportId', "userId"]
-            })
-            return sessions.map((item) => item.dataValues)
-        }
-
         static async getOlderSessions(sportId) {
             const oldSession = await this.findAll({
                 where: {
@@ -77,12 +70,14 @@ module.exports = (sequelize, DataTypes) => {
                 minute: timeBody[1],
                 second: 0,
             })
+            const filteredMembersList = body.membersList.split(',').filter(item => item)
+            const membersList = filteredMembersList.map(items => items.split(' ').map((item) => item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()).join(' '))
             return this.create({
                 userId: userId,
                 sportId: Number(sportId),
                 location: body.location,
                 date: body.date,
-                membersList: body.membersList.split(',').filter(item => item),
+                membersList: membersList,
                 required: body.required
             })
         }
@@ -98,11 +93,11 @@ module.exports = (sequelize, DataTypes) => {
             return session.map((item) => item.dataValues)
         }
 
-        static async getJoinedSessions(userName) {
+        static async getJoinedSessions(email) {
             const sessions = await this.findAll({
                 where: {
                     membersList: {
-                        [Op.contains]: [userName]
+                        [Op.contains]: [email]
                     }
                 },
                 attributes: ['id', 'location', 'date', 'required', 'sportId', "userId"]
@@ -111,9 +106,9 @@ module.exports = (sequelize, DataTypes) => {
             return session.map((item) => item.dataValues)
         }
 
-        static async joinSession(userName, sessionId) {
+        static async joinSession(email, sessionId) {
             const session = await this.getSessionById(sessionId)
-            session.membersList.push(userName)
+            session.membersList.push(email)
             return this.update({
                     membersList: session.membersList,
                     required: session.required - 1,
