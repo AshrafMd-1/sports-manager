@@ -371,6 +371,16 @@ app.get('/sports/:sport/:id/:index/leave', isLoggedIn, async (req, res) => {
     }
 )
 
+app.get("/report", isAdmin, async (req, res) => {
+    let admin = (req.user.admin)
+    let user = await User.getUserDetailsById(req.user.id)
+    user = `${user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1)} ${user.lastName.charAt(0).toUpperCase() + user.lastName.slice(1)}`
+    res.render('report', {
+        csrfToken: req.csrfToken(), title: 'Report', admin: admin, user: user
+    });
+});
+
+
 app.get("/logout", (req, res, next) => {
     req.logout((error) => {
         if (error) {

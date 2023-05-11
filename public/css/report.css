@@ -40,7 +40,7 @@
     height: 50px;
 }
 
-.key {
+.key, .start, .end {
     text-align: center;
     font-size: 18px;
     font-weight: 600;
@@ -57,4 +57,19 @@
     padding: 1px;
 }
 
+.date {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+}
+
+#start, #end {
+    font-size: 16px;
+    font-weight: 600;
+    color: #545454;
+    margin: 0 5px;
+    padding: 2px;
+}
 

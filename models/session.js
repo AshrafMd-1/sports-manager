@@ -21,44 +21,6 @@ module.exports = (sequelize, DataTypes) => {
             });
         }
 
-        static async getOlderSessions(sportId) {
-            const oldSession = await this.findAll({
-                where: {
-                    date: {
-                        [Op.lt]: moment().toDate()
-                    },
-                    sportId: sportId
-                },
-                attributes: ['id', 'location', 'date', 'remaining', 'sportId', "userId"]
-            });
-            return oldSession.map((item) => item.dataValues)
-        }
-
-        static async getNewerSessions(sportId) {
-            const newSession = await this.findAll({
-                where: {
-                    date: {
-                        [Op.gt]: moment().toDate()
-                    },
-                    sportId: sportId
-                },
-                attributes: ['id', 'location', 'date', 'remaining', 'sportId', "userId"]
-            });
-            return newSession.map((item) => item.dataValues)
-        }
-
-
-        static async getSessionById(id) {
-            const session = await this.findOne({
-                where: {
-                    id: id
-                },
-                attributes: ['id', 'location', 'date', 'remaining', 'membersList', 'sportId', "userId"]
-            })
-            if (!session) return reportError('Session not found')
-            return session.dataValues
-        }
-
         static createNewSession(userId, body, sportId) {
             const dateBody = body.date.split('-').map((item) => parseInt(item));
             const timeBody = body.time.split(':').map((item) => parseInt(item));
@@ -82,12 +44,44 @@ module.exports = (sequelize, DataTypes) => {
             })
         }
 
+        static async getSessionById(id) {
+            const session = await this.findOne({
+                where: {
+                    id: id
+                }, attributes: ['id', 'location', 'date', 'remaining', 'membersList', 'sportId', "userId"]
+            })
+            if (!session) return reportError('Session not found')
+            return session.dataValues
+        }
+
+        static async getOlderSessions(sportId) {
+            const oldSession = await this.findAll({
+                where: {
+                    date: {
+                        [Op.lt]: moment().toDate()
+                    }, sportId: sportId
+                }, attributes: ['id', 'location', 'date', 'remaining', 'sportId', "userId"]
+            });
+            return oldSession.map((item) => item.dataValues)
+        }
+
+        static async getNewerSessions(sportId) {
+            const newSession = await this.findAll({
+                where: {
+                    date: {
+                        [Op.gt]: moment().toDate()
+                    }, sportId: sportId
+                }, attributes: ['id', 'location', 'date', 'remaining', 'sportId', "userId"]
+            });
+            return newSession.map((item) => item.dataValues)
+        }
+
+
         static async getCreatedSessions(userId) {
             const sessions = await this.findAll({
                 where: {
                     userId: userId
-                },
-                attributes: ['id', 'location', 'date', 'remaining', 'sportId', "userId"]
+                }, attributes: ['id', 'location', 'date', 'remaining', 'sportId', "userId"]
             })
             const session = sessions.filter((item) => new Date(item.dataValues.date) > new Date())
             return session.map((item) => item.dataValues)
@@ -99,8 +93,7 @@ module.exports = (sequelize, DataTypes) => {
                     membersList: {
                         [Op.contains]: [email]
                     }
-                },
-                attributes: ['id', 'location', 'date', 'remaining', 'sportId', "userId"]
+                }, attributes: ['id', 'location', 'date', 'remaining', 'sportId', "userId"]
             })
             const session = sessions.filter((item) => new Date(item.dataValues.date) > new Date())
             return session.map((item) => item.dataValues)
@@ -110,83 +103,63 @@ module.exports = (sequelize, DataTypes) => {
             const session = await this.getSessionById(sessionId)
             session.membersList.push(email)
             return this.update({
-                    membersList: session.membersList,
-                    remaining: session.remaining - 1,
-                },
-                {
-                    where: {
-                        id: sessionId
-                    }
-                },
-            )
+                membersList: session.membersList, remaining: session.remaining - 1,
+            }, {
+                where: {
+                    id: sessionId
+                }
+            },)
         }
 
         static async leaveSession(index, sessionId) {
             const session = await this.getSessionById(sessionId)
             session.membersList.splice(index, 1)
             return this.update({
-                    membersList: session.membersList,
-                    remaining: session.remaining + 1,
-                },
-                {
-                    where: {
-                        id: sessionId
-                    }
-                },
-            )
+                membersList: session.membersList, remaining: session.remaining + 1,
+            }, {
+                where: {
+                    id: sessionId
+                }
+            },)
         }
+
+
     }
 
     Session.init({
         location: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
+            type: DataTypes.STRING, allowNull: false, validate: {
                 notNull: {
                     msg: "Location is required"
-                },
-                notEmpty: {
+                }, notEmpty: {
                     msg: "Location is left empty"
                 }
             }
-        },
-        date: {
-            type: DataTypes.DATE,
-            allowNull: false,
-            validate: {
+        }, date: {
+            type: DataTypes.DATE, allowNull: false, validate: {
                 isDate: {
                     msg: "Date must be a date"
-                },
-                notNull: {
+                }, notNull: {
                     msg: "Date is required"
-                },
-                notEmpty: {
+                }, notEmpty: {
                     msg: "Date is left empty"
                 }
             }
-        },
-        membersList: {
-            type: DataTypes.ARRAY(DataTypes.STRING),
-            allowNull: false,
-        },
-        remaining: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            validate: {
+        }, membersList: {
+            type: DataTypes.ARRAY(DataTypes.STRING), allowNull: false,
+        }, remaining: {
+            type: DataTypes.INTEGER, allowNull: false, validate: {
                 isNumeric: {
                     msg: "remaining must be a number"
-                },
-                notNull: {
+                }, notNull: {
                     msg: "remaining is required"
-                },
-                notEmpty: {
+                }, notEmpty: {
                     msg: "remaining is left empty"
                 }
             }
         },
     }, {
-        sequelize,
-        modelName: 'Session',
+        sequelize, modelName: 'Session',
     });
     return Session;
 };

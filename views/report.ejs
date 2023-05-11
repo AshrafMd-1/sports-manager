@@ -10,51 +10,45 @@
     <link href="./css/nav.css" rel="stylesheet">
 </head>
 <body>
-<%- include("nav.ejs",{admin:admin}) %>
+<%- include("nav.ejs",{admin:admin,link:"report"}) %>
 <%- include("notification.ejs") %>
 <main>
     <h1>Here is the report, <span class="user"><%= user %></span></h1>
+    <div class="date">
+        <div class="start">
+            <label for="start">Start Date:</label>
+            <input type="date" name="start" id="start" value="2023-01-01">
+        </div>
+        <div class="end">
+            <label for="end">End Date:</label>
+            <input type="date" name="end" id="end" value="2023-05-10">
+        </div>
+        <button class="submit">Submit</button>
+    </div>
     <div class="popularity">
         <h2>Popularity</h2>
         <div class="popular-group">
             <div class="popular-item">
                 <p class="key">Most Popular Sport</p>
-                <% if(sportCount){ %>
-                    <p class="value"><%= sportCount %></p>
-                <% }else{ %>
-                    <p class="empty">No Session</p>
-                <% } %>
+                <p class="value">Cricket</p>
             </div>
             <div class="popular-item">
                 <p class="key">Most Popular Month</p>
-                <% if(sportDate){ %>
-                    <p class="value"><%= sportDate %></p>
-                <% }else{ %>
-                    <p class="empty">No Date</p>
-                <% } %>
+                <p class="value">June</p>
             </div>
             <div class="popular-item">
                 <p class="key">Most Active User</p>
-                <% if(sportUser){ %>
-                    <p class="value"><%= sportUser %></p>
-                <% }else{ %>
-                    <p class="empty">No User</p>
-                <% } %>
+                <p class="value">Ashraf</p>
             </div>
         </div>
-    </div>
-    <div class="numbers">
-        <h2>Number of sports sessions occurred</h2>
-        <div class="number-group">
-            <% if(Object.keys(sportSessions).length === 0){ %>
-                <p class="empty">No Sport</p>
-            <% } else{ %>
-                <% for(let i = 0;i < Object.keys(sportSessions).length;i++){ %>
-                    <div class="number-item">
-                        <p class="key"><%= Object.keys(sportSessions)[i] %></p>
-                        <p class="value"><%= Object.values(sportSessions)[i] %></p>
-                    </div>
-            <% } } %>
+        <div class="numbers">
+            <h2>Number of sports sessions occurred</h2>
+            <div class="number-group">
+                <div class="number-item">
+                    <p class="key">Hockey</p>
+                    <p class="value">10</p>
+                </div>
+            </div>
         </div>
     </div>
 </main>

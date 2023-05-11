@@ -10,7 +10,7 @@
     <link href="./css/nav.css" rel="stylesheet">
 </head>
 <body>
-<%- include("nav.ejs",{admin:admin}) %>
+<%- include("nav.ejs",{admin:admin,link:"dashboard"}) %>
 <%- include("notification.ejs") %>
 <main>
     <h1>Welcome back, <span class="user"><%= user %></span></h1>
