@@ -10,6 +10,7 @@ const {
     sportSessions
 } = require('./functions');
 
+const moment = require('moment');
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const csurf = require("tiny-csrf");
@@ -244,7 +245,11 @@ app.get('/sports/:sport/new-session', isLoggedIn, async (req, res) => {
         await Sport.getSportId(req.params.sport)
         let admin = (req.user.admin)
         res.render('new-session', {
-            csrfToken: req.csrfToken(), title: `New ${req.params.sport} Session`, sport: req.params.sport, admin: admin
+            csrfToken: req.csrfToken(),
+            title: `New ${req.params.sport} Session`,
+            sport: req.params.sport,
+            admin: admin,
+            minDate: new Date().toISOString().split('T')[0]
         });
     } catch (error) {
         console.log(error)
@@ -258,6 +263,13 @@ app.get('/sports/:sport/new-session', isLoggedIn, async (req, res) => {
 
 app.post('/sports/:sport/new-session', isLoggedIn, async (req, res) => {
     try {
+        if (new Date(req.body.date) < new Date()) {
+            res.locals.messages = req.flash(
+                "error",
+                `Date cannot be in the past`,
+            )
+            res.redirect("/sports/" + req.params.sport + "/new-session");
+        }
         const sportId = await Sport.getSportId(req.params.sport)
         await Session.createNewSession(req.user.id, req.body, sportId)
         res.locals.messages = req.flash(
@@ -375,19 +387,19 @@ app.get('/sports/:sport/:id/:index/leave', isLoggedIn, async (req, res) => {
 app.get("/report", isAdmin, async (req, res) => {
     const admin = (req.user.admin)
     const user = capitalizeName(await User.getUserDetailsById(req.user.id))
-    if(!(req.query.start&&req.query.end)){
-        const year=new Date().getFullYear()
-        req.query.start=`${year}-01-01`
-        req.query.end=`${year}-12-31`
+    if (!(req.query.start && req.query.end)) {
+        const year = new Date().getFullYear()
+        req.query.start = `${year}-01-01`
+        req.query.end = `${year}-12-31`
     }
     const sessions = await sessionGenerator(await Session.getSessionByDate(req.query))
-    const sessionCount=sportSessions(sessions)
+    const sessionCount = sportSessions(sessions)
     res.render('report', {
         csrfToken: req.csrfToken(),
         title: 'Report',
         admin: admin,
         user: user,
-        date:[req.query.start,req.query.end],
+        date: [req.query.start, req.query.end],
         sessions: sessions,
         sessionCount: sessionCount,
         displayPrompt: false

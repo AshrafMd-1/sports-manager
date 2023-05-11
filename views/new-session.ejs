@@ -34,11 +34,11 @@
             <label for="location">Location</label>
             <input id="location" name="location" type="text" required>
             <label for="date">Date</label>
-            <input id="date" name="date" type="date" required>
+            <input id="date" min="<%= minDate%>" name="date" type="date" required>
             <label for="time">Time</label>
             <input id="time" name="time" type="time" required>
             <label for="membersList">Members</label>
-            <span class="info">add '@' before a player's first name if he has an account</span>
+            <span class="info">Comma seperated names</span>
             <input id="membersList" name="membersList" type="text" placeholder="name1,name2,@name3...">
             <label for="remaining">Remaining:</label>
             <input id="remaining" name="remaining" min="1" type="number" required>
