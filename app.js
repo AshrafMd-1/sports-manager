@@ -6,7 +6,8 @@ const {
     sessionGenerator,
     capitalizeString,
     capitalizeName,
-    sportGenerator
+    sportGenerator,
+    sportSessions
 } = require('./functions');
 
 const bcrypt = require("bcrypt");
@@ -372,14 +373,26 @@ app.get('/sports/:sport/:id/:index/leave', isLoggedIn, async (req, res) => {
 )
 
 app.get("/report", isAdmin, async (req, res) => {
-    let admin = (req.user.admin)
-    let user = await User.getUserDetailsById(req.user.id)
-    user = `${user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1)} ${user.lastName.charAt(0).toUpperCase() + user.lastName.slice(1)}`
+    const admin = (req.user.admin)
+    const user = capitalizeName(await User.getUserDetailsById(req.user.id))
+    if(!(req.query.start&&req.query.end)){
+        const year=new Date().getFullYear()
+        req.query.start=`${year}-01-01`
+        req.query.end=`${year}-12-31`
+    }
+    const sessions = await sessionGenerator(await Session.getSessionByDate(req.query))
+    const sessionCount=sportSessions(sessions)
     res.render('report', {
-        csrfToken: req.csrfToken(), title: 'Report', admin: admin, user: user
+        csrfToken: req.csrfToken(),
+        title: 'Report',
+        admin: admin,
+        user: user,
+        date:[req.query.start,req.query.end],
+        sessions: sessions,
+        sessionCount: sessionCount,
+        displayPrompt: false
     });
 });
-
 
 app.get("/logout", (req, res, next) => {
     req.logout((error) => {

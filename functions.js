@@ -45,9 +45,22 @@ const sportGenerator = async (sports) => {
     return sports
 }
 
+const sportSessions = (session) => {
+    let sports = {}
+    for (let i = 0; i < session.length; i++) {
+        if (sports[session[i].sport] === undefined) {
+            sports[session[i].sport] = 1
+        } else{
+            sports[session[i].sport] += 1
+        }
+    }
+    return sports
+}
+
 module.exports = {
     capitalizeString,
     capitalizeName,
     sessionGenerator,
-    sportGenerator
+    sportGenerator,
+    sportSessions
 }

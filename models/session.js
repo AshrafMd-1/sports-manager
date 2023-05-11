@@ -123,6 +123,19 @@ module.exports = (sequelize, DataTypes) => {
             },)
         }
 
+        static async getSessionByDate(body) {
+            const offset=24*60
+            let session = await this.findAll({
+                where: {
+                    createdAt: {
+                        [Op.between]: [moment(body.start).add(offset-1110,'minutes').toDate(), moment(body.end).add(offset+329,'minutes').toDate()]
+                    }
+                },
+                attributes: ['id', 'location', 'date', 'remaining', 'sportId', "userId"]
+            })
+            if (!session) return reportError('No session found')
+            return session.map((item) => item.dataValues)
+        }
 
     }
 

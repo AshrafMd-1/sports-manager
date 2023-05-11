@@ -8,49 +8,39 @@
     <link href="./css/dashboard.css" rel="stylesheet">
     <link href="./css/report.css" rel="stylesheet">
     <link href="./css/nav.css" rel="stylesheet">
+    <link href="./css/sessions.css" rel="stylesheet">
 </head>
 <body>
 <%- include("nav.ejs",{admin:admin,link:"report"}) %>
 <%- include("notification.ejs") %>
 <main>
     <h1>Here is the report, <span class="user"><%= user %></span></h1>
-    <div class="date">
+    <form class="date" method="get" action="/report">
         <div class="start">
             <label for="start">Start Date:</label>
-            <input type="date" name="start" id="start" value="2023-01-01">
+            <input type="date" name="start" id="start" value="<%=date[0] %>">
         </div>
         <div class="end">
             <label for="end">End Date:</label>
-            <input type="date" name="end" id="end" value="2023-05-10">
+            <input type="date" name="end" id="end" value="<%= date[1] %>">
         </div>
         <button class="submit">Submit</button>
-    </div>
-    <div class="popularity">
-        <h2>Popularity</h2>
-        <div class="popular-group">
-            <div class="popular-item">
-                <p class="key">Most Popular Sport</p>
-                <p class="value">Cricket</p>
-            </div>
-            <div class="popular-item">
-                <p class="key">Most Popular Month</p>
-                <p class="value">June</p>
-            </div>
-            <div class="popular-item">
-                <p class="key">Most Active User</p>
-                <p class="value">Ashraf</p>
-            </div>
-        </div>
-        <div class="numbers">
-            <h2>Number of sports sessions occurred</h2>
-            <div class="number-group">
-                <div class="number-item">
-                    <p class="key">Hockey</p>
-                    <p class="value">10</p>
-                </div>
-            </div>
+    </form>
+    <div class="numbers">
+        <h2>Number of sports sessions occurred</h2>
+        <div class="number-group">
+            <% if(Object.keys(sessionCount).length === 0){ %>
+                <p class="empty">No Sport</p>
+            <% } else{ %>
+                <% for(let i = 0;i < Object.keys(sessionCount).length;i++){ %>
+                    <div class="number-item">
+                        <p class="key"><%= Object.keys(sessionCount)[i] %></p>
+                        <p class="value"><%= Object.values(sessionCount)[i] %></p>
+                    </div>
+            <% } } %>
         </div>
     </div>
+     <%- include("session-template.ejs",{title:"Sessions Occured",session:sessions,displayPrompt:displayPrompt}) %>
 </main>
 </body>
 </html>
