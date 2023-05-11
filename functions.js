@@ -50,7 +50,7 @@ const sportSessions = (session) => {
     for (let i = 0; i < session.length; i++) {
         if (sports[session[i].sport] === undefined) {
             sports[session[i].sport] = 1
-        } else{
+        } else {
             sports[session[i].sport] += 1
         }
     }

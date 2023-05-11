@@ -18,7 +18,7 @@
     <form class="date" method="get" action="/report">
         <div class="start">
             <label for="start">Start Date:</label>
-            <input type="date" name="start" id="start" value="<%=date[0] %>">
+            <input type="date" name="start" id="start" value="<%= date[0] %>">
         </div>
         <div class="end">
             <label for="end">End Date:</label>
@@ -40,7 +40,7 @@
             <% } } %>
         </div>
     </div>
-     <%- include("session-template.ejs",{title:"Sessions Occured",session:sessions,displayPrompt:displayPrompt}) %>
+    <%- include("session-template.ejs",{title:"Sessions Occured",session:sessions,displayPrompt:displayPrompt}) %>
 </main>
 </body>
 </html>
