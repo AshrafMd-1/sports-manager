@@ -27,6 +27,7 @@ main div > h1 {
 
 .breadcrumb {
     margin: 0;
+    position: relative;
     padding: 0;
 }
 
@@ -143,19 +144,20 @@ main div > h1 {
     padding: 5px 6px 5px 12px;
     box-sizing: border-box;
     word-break: break-word;
-    width: 275px;
+    width: fit-content;
     height: fit-content;
     color: white;
     text-align: left;
-    animation: flash 1s both ease-in-out 1s;
+    animation: flash 1s both ease-in-out 5s;
 }
+
 
 .notify .error p {
     background-color: #d07676;
 }
 
 .notify .success p {
-    background-color: #7ace62;
+    background-color: #1bac1b;
 }
 
 .notify .info p {
@@ -165,6 +167,17 @@ main div > h1 {
 .notify > div {
     margin: 0;
     padding: 0;
+}
+
+.close {
+    color: white;
+    font-size: 18px;
+    margin-left: 7px;
+    font-weight: 900;
+    background: red;
+    padding: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 @keyframes flash {
