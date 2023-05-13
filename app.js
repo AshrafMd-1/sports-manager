@@ -1,30 +1,30 @@
-const express = require('express');
+const express = require("express");
 const bodyParser = require("body-parser");
-const path = require('path');
-const {User, Sport, Session} = require('./models');
+const path = require("path");
+const {User, Sport, Session} = require("./models");
 const {
     sessionGenerator,
     capitalizeString,
     capitalizeName,
     sportGenerator,
-    sportSessions
-} = require('./functions');
+    sportSessions,
+} = require("./functions");
 
-const moment = require('moment');
+const moment = require("moment");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const csurf = require("tiny-csrf");
 const session = require("express-session");
 const flash = require("connect-flash");
 
-const passport = require('passport');
-const LocalStrategy = require('passport-local')
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
 
 const app = express();
 
-app.set('view engine', 'ejs');
+app.set("view engine", "ejs");
 app.set("views", path.resolve(__dirname, "views"));
-app.use(express.static(path.resolve(__dirname, 'public')));
+app.use(express.static(path.resolve(__dirname, "public")));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -32,11 +32,16 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser("cookie-parser-secret"));
 app.use(csurf("bxMNjNqSnWZvWE8f6oxTBykN71PoXmHz"));
 
-app.use(session({
-    saveUninitialized: true, resave: true, secret: "keyboard cat", cookie: {
-        maxAge: 3600000
-    }
-}));
+app.use(
+    session({
+        saveUninitialized: true,
+        resave: true,
+        secret: "keyboard cat",
+        cookie: {
+            maxAge: 3600000,
+        },
+    })
+);
 
 app.use(flash());
 app.use((request, response, next) => {
@@ -47,32 +52,36 @@ app.use((request, response, next) => {
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-passport.use(new LocalStrategy({
-    usernameField: "email", passwordField: "password",
-}, (email, password, done) => {
-    User.findOne({
-        where: {
-            email,
+passport.use(
+    new LocalStrategy(
+        {
+            usernameField: "email",
+            passwordField: "password",
         },
-    })
-        .then(async (user) => {
-            if (!user) {
-                return done(null, false, {message: "User Not Found"});
-            }
-            const result = await bcrypt.compare(password, user.password);
-            if (result) {
-                return done(null, user);
-            } else {
-                return done(null, false, {message: "Incorrect Password"});
-            }
-        })
-        .catch((err) => {
-            console.log(err);
-            return done(err);
-        });
-}));
-
+        (email, password, done) => {
+            User.findOne({
+                where: {
+                    email,
+                },
+            })
+                .then(async (user) => {
+                    if (!user) {
+                        return done(null, false, {message: "User Not Found"});
+                    }
+                    const result = await bcrypt.compare(password, user.password);
+                    if (result) {
+                        return done(null, user);
+                    } else {
+                        return done(null, false, {message: "Incorrect Password"});
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                    return done(err);
+                });
+        }
+    )
+);
 
 passport.serializeUser((user, done) => {
     done(null, user.id);
@@ -91,22 +100,19 @@ passport.deserializeUser(function (id, done) {
 // Used only during auth to identify if a user is already logged in
 const alreadyLoggedIn = (req, res, next) => {
     if (req.isAuthenticated()) {
-        res.locals.messages = req.flash(
-            "info",
-            "You are already logged in",
-        );
-        res.redirect('/dashboard')
+        res.locals.messages = req.flash("info", "You are already logged in");
+        res.redirect("/dashboard");
     } else {
-        return next()
+        return next();
     }
-}
+};
 
 // Used to check if a user is logged in, if not redirect to login page
 const isLoggedIn = (req, res, next) => {
     if (req.isAuthenticated()) {
         return next();
     }
-    res.redirect('/login')
+    res.redirect("/login");
 };
 
 // Used to check if a user is an admin, if not redirect to dashboard
@@ -117,109 +123,119 @@ const isAdmin = (req, res, next) => {
         } else {
             res.locals.messages = req.flash(
                 "info",
-                "User does not have required authorization",
+                "User does not have required authorization"
             );
-            res.redirect('/dashboard')
+            res.redirect("/dashboard");
         }
     } else {
-        res.redirect('/login')
+        res.redirect("/login");
     }
-}
+};
 
-
-app.get('/', alreadyLoggedIn, async (req, res) => {
-    res.render('homepage', {
-        csrfToken: req.csrfToken(), title: 'Homepage'
+app.get("/", alreadyLoggedIn, async (req, res) => {
+    res.render("homepage", {
+        csrfToken: req.csrfToken(),
+        title: "Homepage",
     });
 });
 
-app.get('/signup', alreadyLoggedIn, (req, res) => {
-    res.render('signup', {
-        csrfToken: req.csrfToken(), title: 'Signup'
+app.get("/signup", alreadyLoggedIn, (req, res) => {
+    res.render("signup", {
+        csrfToken: req.csrfToken(),
+        title: "Signup",
     });
-
 });
 
-app.post('/signup', async (req, res) => {
+app.post("/signup", async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const role = (req.body.role.toLowerCase() === "admin");
+    const role = req.body.role.toLowerCase() === "admin";
     try {
-        await User.createNewUser(req.body, role, hashedPassword)
-        res.redirect('/login')
+        await User.createNewUser(req.body, role, hashedPassword);
+        res.redirect("/login");
     } catch (error) {
-        console.log(error)
-        res.locals.messages = req.flash(
-            "error",
-            error.errors[0].message,
-        );
+        console.log(error);
+        res.locals.messages = req.flash("error", error.errors[0].message);
         res.redirect("/signup");
     }
 });
 
-app.get('/login', alreadyLoggedIn, (req, res) => {
-    res.render('login', {
-        csrfToken: req.csrfToken(), title: 'Login'
+app.get("/login", alreadyLoggedIn, (req, res) => {
+    res.render("login", {
+        csrfToken: req.csrfToken(),
+        title: "Login",
     });
 });
 
-app.post('/login', passport.authenticate('local', {
-    successRedirect: '/dashboard', failureRedirect: '/login', failureFlash: true,
-}));
+app.post(
+    "/login",
+    passport.authenticate("local", {
+        successRedirect: "/dashboard",
+        failureRedirect: "/login",
+        failureFlash: true,
+    })
+);
 
-app.get('/dashboard', isLoggedIn, async (req, res) => {
-    const user = capitalizeName(await User.getUserDetailsById(req.user.id))
-    const joinedSessions = await sessionGenerator(await Session.getJoinedSessions(req.user.email))
-    const createdSessions = await sessionGenerator(await Session.getCreatedSessions(req.user.id))
-    const admin = (req.user.admin)
-    res.render('dashboard', {
+app.get("/dashboard", isLoggedIn, async (req, res) => {
+    const user = capitalizeName(await User.getUserDetailsById(req.user.id));
+    const joinedSessions = await sessionGenerator(
+        await Session.getJoinedSessions(req.user.email)
+    );
+    const createdSessions = await sessionGenerator(
+        await Session.getCreatedSessions(req.user.id)
+    );
+    const canceledSessions = await sessionGenerator(
+        await Session.getCanceledSessions(req.user.email)
+    );
+    const admin = req.user.admin;
+    res.render("dashboard", {
         csrfToken: req.csrfToken(),
-        title: 'Dashboard',
+        title: "Dashboard",
         createdSessions: createdSessions,
         joinedSessions: joinedSessions,
+        canceledSessions: canceledSessions,
         user: user,
         admin: admin,
-        displayPrompt: false
+        displayPrompt: false,
     });
 });
 
-app.get('/sports', isLoggedIn, async (req, res) => {
-    const sports = await sportGenerator(await Sport.getAllSports())
-    const admin = (req.user.admin)
-    res.render('sports', {
-        csrfToken: req.csrfToken(), title: 'Sports', sports: sports, admin: admin
+app.get("/sports", isLoggedIn, async (req, res) => {
+    const sports = await sportGenerator(await Sport.getAllSports());
+    const admin = req.user.admin;
+    res.render("sports", {
+        csrfToken: req.csrfToken(),
+        title: "Sports",
+        sports: sports,
+        admin: admin,
     });
 });
 
-app.get('/sports/new-sport', isAdmin, (req, res) => {
-    const admin = (req.user.admin)
-    res.render('new-sport', {
-        csrfToken: req.csrfToken(), title: 'New Sport', admin: admin
+app.get("/sports/new-sport", isAdmin, (req, res) => {
+    const admin = req.user.admin;
+    res.render("new-sport", {
+        csrfToken: req.csrfToken(),
+        title: "New Sport",
+        admin: admin,
     });
 });
 
-app.post('/sports/new-sport', isAdmin, async (req, res) => {
+app.post("/sports/new-sport", isAdmin, async (req, res) => {
     try {
-        await Sport.createNewSport(req.user.id, capitalizeString(req.body.sport))
-        res.locals.messages = req.flash(
-            "success",
-            'Sport successfully created',
-        );
-        res.redirect('/sports')
+        await Sport.createNewSport(req.user.id, capitalizeString(req.body.sport));
+        res.locals.messages = req.flash("success", "Sport successfully created");
+        res.redirect("/sports");
     } catch (error) {
-        console.log(error)
-        res.locals.messages = req.flash(
-            "error",
-            error.errors[0].message,
-        );
+        console.log(error);
+        res.locals.messages = req.flash("error", error.errors[0].message);
         res.redirect("/sports");
     }
 });
 
-app.get('/sports/:sport', isLoggedIn, async (req, res) => {
+app.get("/sports/:sport", isLoggedIn, async (req, res) => {
     try {
         const sportId = await Sport.getSportId(req.params.sport)
-        const oldSessions = await sessionGenerator(await Session.getOlderSessions(sportId))
-        const newSessions = await sessionGenerator(await Session.getNewerSessions(sportId))
+        const oldSessions = await sessionGenerator(await Session.getOlderSessions(sportId), true, true)
+        const newSessions = await sessionGenerator(await Session.getNewerSessions(sportId), true, true)
         const admin = (req.user.admin)
         res.render('session', {
             csrfToken: req.csrfToken(),
@@ -228,181 +244,144 @@ app.get('/sports/:sport', isLoggedIn, async (req, res) => {
             oldSessions: oldSessions,
             newSessions: newSessions,
             admin: admin,
-            displayPrompt: false
+            displayPrompt: true,
         });
     } catch (error) {
-        console.log(error)
-        res.locals.messages = req.flash(
-            "error",
-            `Sport does not exist`,
-        )
-        res.redirect('/sports')
+        console.log(error);
+        res.locals.messages = req.flash("error", `Sport does not exist`);
+        res.redirect("/sports");
     }
 });
 
-app.get('/sports/:sport/new-session', isLoggedIn, async (req, res) => {
+app.get("/sports/:sport/new-session", isLoggedIn, async (req, res) => {
     try {
-        await Sport.getSportId(req.params.sport)
-        let admin = (req.user.admin)
-        res.render('new-session', {
+        await Sport.getSportId(req.params.sport);
+        let admin = req.user.admin;
+        res.render("new-session", {
             csrfToken: req.csrfToken(),
             title: `New ${req.params.sport} Session`,
             sport: req.params.sport,
             admin: admin,
-            minDate: new Date().toISOString().split('T')[0]
+            minDate: moment().format(`YYYY-MM-DD`)
         });
     } catch (error) {
-        console.log(error)
-        res.locals.messages = req.flash(
-            "error",
-            `Sport does not exist`,
-        )
-        res.redirect('/sports')
+        console.log(error);
+        res.locals.messages = req.flash("error", `Sport does not exist`);
+        res.redirect("/sports");
     }
 });
 
-app.post('/sports/:sport/new-session', isLoggedIn, async (req, res) => {
+app.post("/sports/:sport/new-session", isLoggedIn, async (req, res) => {
     try {
         if (new Date(req.body.date) < new Date()) {
-            res.locals.messages = req.flash(
-                "error",
-                `Date cannot be in the past`,
-            )
+            res.locals.messages = req.flash("error", `Date cannot be in the past`);
             res.redirect("/sports/" + req.params.sport + "/new-session");
+            return
         }
-        const sportId = await Sport.getSportId(req.params.sport)
-        await Session.createNewSession(req.user.id, req.body, sportId)
-        res.locals.messages = req.flash(
-            "success",
-            'Session successfully created',
-        );
-        res.redirect('/sports/' + req.params.sport)
+        const sportId = await Sport.getSportId(req.params.sport);
+        await Session.createNewSession(req.user.id, req.body, sportId);
+        res.locals.messages = req.flash("success", "Session successfully created");
+        res.redirect("/sports/" + req.params.sport);
     } catch (error) {
-        console.log(error)
-        res.locals.messages = req.flash(
-            "error",
-            error.errors[0].message,
-        );
+        console.log(error);
+        res.locals.messages = req.flash("error", error.errors[0].message);
         res.redirect("/sports/" + req.params.sport + "/new-session");
     }
 });
 
-app.get('/sports/:sport/:id', isLoggedIn, async (req, res) => {
+app.get("/sports/:sport/:id", isLoggedIn, async (req, res) => {
     try {
-        await Sport.getSportId(req.params.sport)
-        const session = await sessionGenerator(await Session.getSessionById(req.params.id), true)
-        let admin = (req.user.admin)
-        res.render('session-info', {
+        await Sport.getSportId(req.params.sport);
+        const session = await sessionGenerator(
+            await Session.getSessionById(req.params.id),
+            true
+        );
+        let admin = req.user.admin;
+        res.render("session-info", {
             csrfToken: req.csrfToken(),
             title: `${req.params.sport} #${req.params.id} Session`,
             session: session,
             user: req.user.id,
-            admin: admin
-        })
+            admin: admin,
+        });
     } catch (error) {
-        console.log(error)
-        res.locals.messages = req.flash(
-            "error",
-            `Sport or Session does not exist`,
-        )
-        res.redirect('/sports')
+        console.log(error);
+        res.locals.messages = req.flash("error", `Sport or Session does not exist`);
+        res.redirect("/sports");
     }
 });
 
-app.get('/sports/:sport/:id/join', isLoggedIn, async (req, res) => {
+app.get("/sports/:sport/:id/join", isLoggedIn, async (req, res) => {
     try {
-        await Sport.getSportId(req.params.sport)
-        const session = await Session.getSessionById(req.params.id)
+        await Sport.getSportId(req.params.sport);
+        const session = await Session.getSessionById(req.params.id);
         if (session.date < new Date()) {
-            res.locals.messages = req.flash(
-                "info",
-                `Session already over`,
-            )
-            res.redirect("/sports/" + req.params.sport + '/' + req.params.id);
+            res.locals.messages = req.flash("info", `Session already over`);
+            res.redirect("/sports/" + req.params.sport + "/" + req.params.id);
         } else if (session.membersList.includes(req.user.email)) {
-            res.locals.messages = req.flash(
-                "info",
-                `Already joined the Session`,
-            )
-            res.redirect("/sports/" + req.params.sport + '/' + req.params.id);
+            res.locals.messages = req.flash("info", `Already joined the Session`);
+            res.redirect("/sports/" + req.params.sport + "/" + req.params.id);
         } else {
-            await Session.joinSession(req.user.email, req.params.id)
-            res.locals.messages = req.flash(
-                "success",
-                `Joined the Session`,
-            )
-            res.redirect("/sports/" + req.params.sport + '/' + req.params.id);
+            await Session.joinSession(req.user.email, req.params.id);
+            res.locals.messages = req.flash("success", `Joined the Session`);
+            res.redirect("/sports/" + req.params.sport + "/" + req.params.id);
         }
     } catch (error) {
-        console.log(error)
-        res.locals.messages = req.flash(
-            "error",
-            `Sport or Session does not exist`,
-        )
-        res.redirect('/sports')
+        console.log(error);
+        res.locals.messages = req.flash("error", `Sport or Session does not exist`);
+        res.redirect("/sports");
     }
-})
+});
 
-app.get('/sports/:sport/:id/:index/leave', isLoggedIn, async (req, res) => {
-        try {
-            await Sport.getSportId(req.params.sport)
-            const session = await Session.getSessionById(req.params.id)
-            if (session.date < new Date()) {
-                res.locals.messages = req.flash(
-                    "info",
-                    `Session already over`,
-                )
-                res.redirect("/sports/" + req.params.sport + '/' + req.params.id);
-            } else if (session.membersList.length < req.params.index) {
-                res.locals.messages = req.flash(
-                    "info",
-                    `User not present in Session`,
-                )
-                res.redirect("/sports/" + req.params.sport + '/' + req.params.id);
-            } else if (session.userId === req.user.id || session.membersList.indexOf(req.user.email) === Number(req.params.index)) {
-                await Session.leaveSession(req.params.index, req.params.id)
-                res.locals.messages = req.flash(
-                    "success",
-                    `Left the Session`,
-                )
-                res.redirect("/sports/" + req.params.sport + '/' + req.params.id);
-            } else {
-                res.locals.messages = req.flash(
-                    "info",
-                    `User not authorized`,
-                )
-                res.redirect("/sports/" + req.params.sport + '/' + req.params.id);
-            }
-        } catch (error) {
-            console.log(error)
-            res.locals.messages = req.flash(
-                "error",
-                `Sport or Session does not exist`,
-            )
-            res.redirect('/sports')
+app.get("/sports/:sport/:id/:index/leave", isLoggedIn, async (req, res) => {
+    try {
+        await Sport.getSportId(req.params.sport);
+        const session = await Session.getSessionById(req.params.id);
+        if (session.date < new Date()) {
+            res.locals.messages = req.flash("info", `Session already over`);
+            res.redirect("/sports/" + req.params.sport + "/" + req.params.id);
+        } else if (session.membersList.length < req.params.index) {
+            res.locals.messages = req.flash("info", `User not present in Session`);
+            res.redirect("/sports/" + req.params.sport + "/" + req.params.id);
+        } else if (
+            session.userId === req.user.id ||
+            session.membersList.indexOf(req.user.email) === Number(req.params.index)
+        ) {
+            await Session.leaveSession(req.params.index, req.params.id);
+            res.locals.messages = req.flash("success", `Left the Session`);
+            res.redirect("/sports/" + req.params.sport + "/" + req.params.id);
+        } else {
+            res.locals.messages = req.flash("info", `User not authorized`);
+            res.redirect("/sports/" + req.params.sport + "/" + req.params.id);
         }
+    } catch (error) {
+        console.log(error);
+        res.locals.messages = req.flash("error", `Sport or Session does not exist`);
+        res.redirect("/sports");
     }
-)
+});
 
 app.get("/report", isAdmin, async (req, res) => {
-    const admin = (req.user.admin)
-    const user = capitalizeName(await User.getUserDetailsById(req.user.id))
+    const admin = req.user.admin;
+    const user = capitalizeName(await User.getUserDetailsById(req.user.id));
     if (!(req.query.start && req.query.end)) {
-        const year = new Date().getFullYear()
-        req.query.start = `${year}-01-01`
-        req.query.end = `${year}-12-31`
+        const year = new Date().getFullYear();
+        req.query.start = `${year}-01-01`;
+        req.query.end = `${year}-12-31`;
     }
-    const sessions = await sessionGenerator(await Session.getSessionByDate(req.query))
-    const sessionCount = sportSessions(sessions)
-    res.render('report', {
+    const sessions = await sessionGenerator(
+        await Session.getSessionByDate(req.query), true, true
+    );
+    const sessionCount = sportSessions(sessions);
+    res.render("report", {
         csrfToken: req.csrfToken(),
-        title: 'Report',
+        title: "Report",
         admin: admin,
         user: user,
         date: [req.query.start, req.query.end],
         sessions: sessions,
         sessionCount: sessionCount,
-        displayPrompt: false
+        displayPrompt: true,
     });
 });
 
@@ -416,4 +395,4 @@ app.get("/logout", (req, res, next) => {
     });
 });
 
-module.exports = app
+module.exports = app;

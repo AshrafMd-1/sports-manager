@@ -15,7 +15,6 @@
     margin: 20px 0;
 }
 
-
 .key {
     font-size: 20px;
     font-weight: 600;
@@ -31,7 +30,6 @@
     margin: 0 5px;
     padding: 1px;
 }
-
 
 .sport {
     display: flex;
@@ -57,7 +55,6 @@ a {
     background-color: #e6e6e6;
     font-weight: 700;
 }
-
 
 .detail {
     display: flex;

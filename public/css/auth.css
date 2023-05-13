@@ -30,12 +30,11 @@ nav {
     width: 28px;
 }
 
-
 .home a {
     text-decoration: none;
     color: #565656;
     transition: font-size 0.3s;
-    font-size: 1.4em
+    font-size: 1.4em;
 }
 
 .home a:hover {
@@ -44,7 +43,6 @@ nav {
     text-decoration: underline;
     font-size: 1.6em;
 }
-
 
 .header p {
     font-size: 30px;
@@ -59,13 +57,11 @@ main {
     align-items: center;
     margin-top: 20px;
     margin-bottom: 40px;
-
 }
 
 main p {
     font-size: 22px;
     margin: 12px;
-
 }
 
 form {
@@ -122,7 +118,8 @@ form button:hover {
     font-size: 22px;
 }
 
-.signup-input, .login-input {
+.signup-input,
+.login-input {
     display: flex;
     flex-direction: column;
     justify-content: center;

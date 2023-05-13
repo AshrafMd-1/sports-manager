@@ -16,6 +16,7 @@
     <h1>Welcome back, <span class="user"><%= user %></span></h1>
     <%- include("session-template.ejs",{title:"Joined Sessions",session:joinedSessions,displayPrompt:displayPrompt}) %>
     <%- include("session-template.ejs",{title:"Created Sessions",session:createdSessions,displayPrompt:displayPrompt}) %>
+    <%- include("session-template.ejs",{title:"Canceled Sessions",session:canceledSessions,displayPrompt:displayPrompt}) %>
 </main>
 </body>
 </html>

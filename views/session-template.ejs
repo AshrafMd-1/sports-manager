@@ -14,12 +14,22 @@
                     <div class="session-part">
                         <span class="key"><%= session[i].sport %></span>
                         <span class="value">#<%= session[i].id %></span>
-                        <% if(displayPrompt){ %>
-                            <span>[ joined ]</span>
+                    </div>
+                    <div class="joined">
+                        <% if(displayPrompt && session[i].joined){ %>
+                            <span>Joined</span>
                         <% } %>
                     </div>
                     <% if(displayPrompt){ %>
-                        <p class="status">Upcoming</p>
+                        <div class="status">
+                            <% if(session[i].cancel){ %>
+                                <p class="canceled">Cancelled</p>
+                            <% }else if(new Date(session[i].date) < new Date()){ %>
+                                <p class="completed">Completed</p>
+                            <% }else{ %>
+                                <p class="upcoming">Upcoming</p>
+                            <% } %>
+                        </div>
                     <% } %>
                     <a href="/sports/<%= session[i].sport %>/<%= session[i].id %>" class="view-session">View</a>
                 </div>

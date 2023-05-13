@@ -6,7 +6,6 @@
     margin: 20px 0;
 }
 
-
 form {
     display: flex;
     flex-direction: column;
@@ -41,7 +40,6 @@ form {
     font-size: 20px;
     font-weight: 700;
 }
-
 
 .info {
     color: #0051ff;

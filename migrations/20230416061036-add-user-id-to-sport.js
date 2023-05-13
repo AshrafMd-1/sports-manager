@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -9,15 +9,15 @@ module.exports = {
          * Example:
          * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
          */
-        await queryInterface.addColumn('Sports', 'userId', {
+        await queryInterface.addColumn("Sports", "userId", {
             type: Sequelize.INTEGER,
         });
-        await queryInterface.addConstraint('Sports', {
-            fields: ['userId'],
-            type: 'foreign key',
+        await queryInterface.addConstraint("Sports", {
+            fields: ["userId"],
+            type: "foreign key",
             references: {
-                table: 'Users',
-                field: 'id'
+                table: "Users",
+                field: "id",
             },
         });
     },
@@ -29,7 +29,6 @@ module.exports = {
          * Example:
          * await queryInterface.dropTable('users');
          */
-        await queryInterface.removeColumn('Sports', 'userId');
-    }
-}
-;
+        await queryInterface.removeColumn("Sports", "userId");
+    },
+};

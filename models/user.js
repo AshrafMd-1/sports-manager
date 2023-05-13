@@ -1,7 +1,5 @@
-'use strict';
-const {
-    Model
-} = require('sequelize');
+"use strict";
+const {Model} = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
     class User extends Model {
         /**
@@ -13,77 +11,80 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             // define association here
             User.hasMany(models.Sport, {
-                foreignKey: 'userId',
+                foreignKey: "userId",
             });
             User.hasMany(models.Session, {
-                foreignKey: 'userId',
+                foreignKey: "userId",
             });
         }
 
         static createNewUser(body, role, hashPassword) {
             return this.create({
                 admin: role,
-                firstName: body.firstName.charAt(0).toUpperCase() + body.firstName.slice(1),
-                lastName: body.lastName.charAt(0).toUpperCase() + body.lastName.slice(1),
+                firstName:
+                    body.firstName.charAt(0).toUpperCase() + body.firstName.slice(1),
+                lastName:
+                    body.lastName.charAt(0).toUpperCase() + body.lastName.slice(1),
                 email: body.email,
-                password: hashPassword
-            })
+                password: hashPassword,
+            });
         }
 
         static async getUserDetailsById(id) {
             const user = await this.findOne({
                 where: {
-                    id: id
+                    id: id,
                 },
-                attributes: ['id', 'firstName', 'lastName', 'email']
-            })
-            return user.dataValues
+                attributes: ["id", "firstName", "lastName", "email"],
+            });
+            return user.dataValues;
         }
 
         static async getUserDetailsByEmail(email) {
             const user = await this.findOne({
                 where: {
-                    email: email
+                    email: email,
                 },
-                attributes: ['id', 'firstName', 'lastName', 'email']
-            })
-            return user.dataValues
+                attributes: ["id", "firstName", "lastName", "email"],
+            });
+            return user.dataValues;
         }
     }
 
-    User.init({
+    User.init(
+        {
             admin: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
                 allowNull: false,
                 validate: {
                     notNull: {
-                        msg: 'Role is required'
+                        msg: "Role is required",
                     },
                     notEmpty: {
-                        msg: 'Role is left empty'
-                    }
-                }
+                        msg: "Role is left empty",
+                    },
+                },
             },
             firstName: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 validate: {
                     notNull: {
-                        msg: 'First name is required'
+                        msg: "First name is required",
                     },
                     notEmpty: {
-                        msg: 'First name is left empty'
-                    }
-                }
+                        msg: "First name is left empty",
+                    },
+                },
             },
             lastName: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 validate: {
                     notNull: {
-                        msg: 'Last name is required'
-                    }
+                        msg: "Last name is required",
+                    },
                 },
             },
             email: {
@@ -91,15 +92,15 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
                 unique: {
                     args: true,
-                    msg: 'Email address already in use'
+                    msg: "Email address already in use",
                 },
                 validate: {
                     notNull: {
-                        msg: 'Email is required'
+                        msg: "Email is required",
                     },
                     notEmpty: {
-                        msg: 'Email is left empty'
-                    }
+                        msg: "Email is left empty",
+                    },
                 },
             },
             password: {
@@ -107,17 +108,17 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
                 validate: {
                     notNull: {
-                        msg: 'Password is required'
+                        msg: "Password is required",
                     },
                     notEmpty: {
-                        msg: 'Password is left empty'
+                        msg: "Password is left empty",
                     },
                 },
-            }
+            },
         },
         {
             sequelize,
-            modelName: 'User',
+            modelName: "User",
         }
     );
     return User;

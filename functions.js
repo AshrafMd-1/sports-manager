@@ -1,66 +1,74 @@
 const {Sport, User} = require("./models");
 
 const capitalizeString = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1)
-}
+    return string.charAt(0).toUpperCase() + string.slice(1);
+};
 
 const capitalizeName = (user) => {
-    return capitalizeString(user.firstName) + " " + capitalizeString(user.lastName)
-}
+    return (
+        capitalizeString(user.firstName) + " " + capitalizeString(user.lastName)
+    );
+};
 
 const sportName = (session) => {
-    return Sport.getSport(session.sportId)
-}
+    return Sport.getSport(session.sportId);
+};
 
 const userName = (userId) => {
-    return User.getUserDetailsById(userId)
-}
+    return User.getUserDetailsById(userId);
+};
 
 const userEmail = (email) => {
-    return User.getUserDetailsByEmail(email)
-}
+    return User.getUserDetailsByEmail(email);
+};
 
-const sessionGenerator = async (sessions, hasMembers = false) => {
+const sessionGenerator = async (sessions, hasMembers = false, hasJoined = false) => {
     if (sessions.length === undefined) {
-        sessions = [sessions]
+        sessions = [sessions];
     }
     for (let i = 0; i < sessions.length; i++) {
-        sessions[i].sport = await sportName(sessions[i])
-        sessions[i].user = capitalizeName(await userName(sessions[i].userId))
+        sessions[i].sport = await sportName(sessions[i]);
+        sessions[i].user = capitalizeName(await userName(sessions[i].userId));
         if (hasMembers) {
             for (let j = 0; j < sessions[i].membersList.length; j++) {
-                if (sessions[i].membersList[j].includes('@')) {
-                    sessions[i].membersList[j] = await userEmail(sessions[i].membersList[j])
+                if (sessions[i].membersList[j].includes("@")) {
+                    sessions[i].membersList[j] = await userEmail(
+                        sessions[i].membersList[j]
+                    );
+                    if (hasJoined && sessions[i].userId === sessions[i].membersList[j].id) {
+                        sessions[i].joined = true
+                    }
                 }
             }
         }
     }
-    return sessions
-}
+    return sessions;
+};
 
 const sportGenerator = async (sports) => {
     for (let i = 0; i < sports.length; i++) {
-        sports[i].user = capitalizeName(await userName(sports[i].userId))
+        sports[i].user = capitalizeName(await userName(sports[i].userId));
     }
-    return sports
-}
+    return sports;
+};
 
 const sportSessions = (session) => {
-    let sports = {}
+    let sports = {};
     for (let i = 0; i < session.length; i++) {
         if (sports[session[i].sport] === undefined) {
-            sports[session[i].sport] = 1
+            sports[session[i].sport] = 1;
         } else {
-            sports[session[i].sport] += 1
+            sports[session[i].sport] += 1;
         }
     }
-    return sports
-}
+    return sports;
+};
+
 
 module.exports = {
     capitalizeString,
     capitalizeName,
     sessionGenerator,
     sportGenerator,
-    sportSessions
-}
+    sportSessions,
+};
