@@ -494,7 +494,6 @@ app.get("/sports/:sport/:id/cancel-session", isLoggedIn, async (req, res) => {
       await Session.getSessionById(req.params.id),
       true
     );
-    console.log(session[0]);
     let admin = req.user.admin;
     if (session[0].date < new Date()) {
       res.locals.messages = req.flash("info", `Session already over`);

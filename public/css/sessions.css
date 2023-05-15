@@ -116,7 +116,8 @@
     flex-direction: column;
 }
 
-.info-key, .cancel-key {
+.info-key,
+.cancel-key {
     font-size: 24px;
     font-weight: 600;
     color: #545454;
@@ -124,7 +125,8 @@
     padding: 1px;
 }
 
-.info-value, .cancel-value {
+.info-value,
+.cancel-value {
     font-size: 22px;
     font-weight: 600;
     color: #000000;
@@ -201,7 +203,7 @@
 }
 
 .upcoming {
-    background-color: #6363ff;
+    background-color: #1bac1b;
 }
 
 .completed {
@@ -219,7 +221,7 @@
     color: white;
     font-size: 22px;
     font-weight: 700;
-    background-color: #1bac1b;
+    background-color: #6363ff;
     border-radius: 10px;
     padding: 2px 6px;
 }
