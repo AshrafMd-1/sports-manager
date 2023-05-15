@@ -92,6 +92,28 @@ module.exports = (sequelize, DataTypes) => {
       );
     }
 
+    static async cancelSession(id, reason) {
+      const session = await this.findOne({
+        where: {
+          id: id,
+        },
+      });
+      if (!session) {
+        throw new Error("Session not found");
+      }
+      return this.update(
+        {
+          cancel: true,
+          reason: reason,
+        },
+        {
+          where: {
+            id: id,
+          },
+        }
+      );
+    }
+
     static async getSessionById(id) {
       const session = await this.findOne({
         where: {
@@ -105,6 +127,8 @@ module.exports = (sequelize, DataTypes) => {
           "membersList",
           "sportId",
           "userId",
+          "cancel",
+          "reason",
         ],
       });
       if (!session) {
@@ -161,6 +185,7 @@ module.exports = (sequelize, DataTypes) => {
       const sessions = await this.findAll({
         where: {
           userId: userId,
+          cancel: false,
         },
         attributes: [
           "id",
@@ -183,6 +208,7 @@ module.exports = (sequelize, DataTypes) => {
           membersList: {
             [Op.contains]: [email],
           },
+          cancel: false,
         },
         attributes: [
           "id",

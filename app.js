@@ -487,6 +487,55 @@ app.get("/sports/:sport/:id/:index/leave", isLoggedIn, async (req, res) => {
   }
 });
 
+app.get("/sports/:sport/:id/cancel-session", isLoggedIn, async (req, res) => {
+  try {
+    await Sport.getSportId(req.params.sport);
+    let session = await sessionGenerator(
+      await Session.getSessionById(req.params.id),
+      true
+    );
+    console.log(session[0]);
+    let admin = req.user.admin;
+    if (session[0].date < new Date()) {
+      res.locals.messages = req.flash("info", `Session already over`);
+      res.redirect("/sports/" + req.params.sport + "/" + req.params.id);
+    } else if (session[0].cancel) {
+      res.locals.messages = req.flash("info", `Session already cancelled`);
+      res.redirect("/sports/" + req.params.sport + "/" + req.params.id);
+    } else if (session[0].userId === req.user.id) {
+      res.render("cancel", {
+        csrfToken: req.csrfToken(),
+        title: `Cancel ${req.params.sport} #${req.params.id} Session`,
+        session: session,
+        admin: admin,
+      });
+    } else {
+      res.locals.messages = req.flash("info", `User not authorized`);
+      res.redirect("/sports/" + req.params.sport + "/" + req.params.id);
+    }
+  } catch (error) {
+    console.log(error);
+    res.locals.messages = req.flash("error", `Sport or Session does not exist`);
+    res.redirect("/sports");
+  }
+});
+
+app.post("/sports/:sport/:id/cancel-session", isLoggedIn, async (req, res) => {
+  try {
+    await Sport.getSportId(req.params.sport);
+    await Session.cancelSession(
+      req.params.id,
+      capitalizeString(req.body.reason)
+    );
+    res.locals.messages = req.flash("success", "Session has been cancelled");
+    res.redirect("/sports/" + req.params.sport + "/" + req.params.id);
+  } catch (error) {
+    console.log(error);
+    res.locals.messages = req.flash("error", `Sport or Session does not exist`);
+    res.redirect("/sports/" + req.params.sport);
+  }
+});
+
 app.get("/report", isAdmin, async (req, res) => {
   const admin = req.user.admin;
   const user = capitalizeName(await User.getUserDetailsById(req.user.id));

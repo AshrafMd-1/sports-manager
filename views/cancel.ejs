@@ -17,21 +17,25 @@
         <ul>
             <li><a href="/sports">Sports</a></li>
             <li>/</li>
-            <li><a href="#">New-Sport</a></li>
+            <li><a href="/sports/<%= session[0].sport %>"><%= session[0].sport %></a></li>
+            <li>/</li>
+            <li><a href="/sports/<%= session[0].sport %>/<%= session[0].id %>">#<%= session[0].id %></a></li>
+            <li>/</li>
+            <li><a href="#">Cancel-Session</a></li>
         </ul>
     </div>
     <div class="intro">
-        <h1>Add New Sports</h1>
+        <h1>Cancel Session <%= session[0].sport %> #<%= session[0].id %></h1>
         <div class="buttons">
-            <a href="/sports" class="cancel">Cancel</a>
+            <a href="/sports/<%= session[0].sport %>/<%= session[0].id %>" class="cancel">Cancel</a>
         </div>
     </div>
-    <form id="new-Sport" action="/sports/new-sport" method="post">
+    <form id="cancel-Sport" action="/sports/<%= session[0].sport %>/<%= session[0].id %>/cancel-session" method="post">
         <input name="_csrf" type="hidden" value="<%= csrfToken %>">
         <div class="form-group">
-            <label for="sport">Sport</label>
-            <input id="sport" name="sport" type="text" required>
-            <button class="add" type="submit">Add</button>
+            <label for="reason">Reason for cancellation of session</label>
+            <input id="reason" name="reason" type="text" required>
+            <button class="cancel-session" type="submit">Cancel Session</button>
         </div>
     </form>
 </main>

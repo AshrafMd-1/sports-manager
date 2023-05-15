@@ -25,12 +25,23 @@
     <div class="intro">
         <h1><%= session[0].sport %> #<%= session[0].id %></h1>
         <div class="buttons">
-            <% if(session[0].date > new Date() && !session[0].joined){ %>
+            <% if(session[0].date > new Date() && !session[0].joined && !session[0].cancel){ %>
                 <a href="/sports/<%= session[0].sport %>/<%= session[0].id %>/join" class="join">Join
                     Session</a>
             <% } %>
             <a href="/sports/<%= session[0].sport %>" class="cancel">Cancel</a>
         </div>
+    </div>
+    <div class="session-description">
+        <% if(session[0].cancel){ %>
+            <span class="status-des red">Session Cancelled</span>
+        <% }else if(session[0].date < new Date()){ %>
+            <span class="status-des orange">Session Ended</span>
+        <% }else if(session[0].joined){ %>
+            <span class="status-des blue">Joined</span>
+        <% }else if(session[0].date > new Date()){ %>
+            <span class="status-des green">Open</span>
+        <% } %>
     </div>
     <div class="session-info">
         <div class="info-text">
@@ -108,9 +119,15 @@
                 <% }} %>
             </div>
         </div>
+        <% if(session[0].cancel){ %>
+            <div class="cancellation">
+                <span class="cancel-key">Reason:</span>
+                <span class="cancel-value"><%= session[0].reason %></span>
+            </div>
+        <% } %>
     </div>
     <div class="button">
-        <% if(session[0].userId === user && session[0].date > new Date() ){ %>
+        <% if(session[0].userId === user && session[0].date > new Date() && !session[0].cancel ){ %>
             <a href="/sports/<%= session[0].sport %>/<%= session[0].id %>/edit-session" class="edit-session">Edit
                 Session</a>
             <a href="/sports/<%= session[0].sport %>/<%= session[0].id %>/cancel-session" class="cancel-session">Cancel

@@ -116,7 +116,7 @@
     flex-direction: column;
 }
 
-.info-key {
+.info-key, .cancel-key {
     font-size: 24px;
     font-weight: 600;
     color: #545454;
@@ -124,7 +124,7 @@
     padding: 1px;
 }
 
-.info-value {
+.info-value, .cancel-value {
     font-size: 22px;
     font-weight: 600;
     color: #000000;
@@ -229,4 +229,46 @@
     justify-content: center;
     align-items: center;
     margin: 10px 0;
+}
+
+.session-description {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 15px 0;
+}
+
+.status-des {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 5px;
+}
+
+.red {
+    color: #ff4974;
+}
+
+.orange {
+    color: #faa50a;
+}
+
+.green {
+    color: #1bac1b;
+}
+
+.blue {
+    color: #6363ff;
+}
+
+.cancellation {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 5px 0;
+}
+
+.cancel-key {
+    color: #ff4974;
 }
