@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
                 sportId: Number(sportId),
                 location: body.location,
                 date: body.date,
-                membersList: membersList,
+                membersList: Array.from(new Set(membersList)),
                 remaining: body.remaining,
                 cancel: false,
                 reason: ''

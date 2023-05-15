@@ -279,9 +279,9 @@ app.post("/sports/:sport/new-session", isLoggedIn, async (req, res) => {
             return
         }
         const sportId = await Sport.getSportId(req.params.sport);
-        await Session.createNewSession(req.user.id, req.body, sportId);
+        const session=await Session.createNewSession(req.user.id, req.body, sportId);
         res.locals.messages = req.flash("success", "Session successfully created");
-        res.redirect("/sports/" + req.params.sport);
+        res.redirect("/sports/" + req.params.sport+"/"+session.id);
     } catch (error) {
         console.log(error);
         res.locals.messages = req.flash("error", error.errors[0].message);
