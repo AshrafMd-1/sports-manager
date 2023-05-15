@@ -7,9 +7,13 @@
             <script>
                 const closeEl = document.getElementById("close")
                 const notifyEl = document.getElementById("notify")
-                closeEl.addEventListener("click", () => {
-                    notifyEl.innerHTML = ""
-                })
+                if (window.location.href.includes("login") || window.location.href.includes("signup")) {
+                    closeEl.innerHTML = ""
+                } else {
+                    closeEl.addEventListener("click", () => {
+                        notifyEl.innerHTML = ""
+                    })
+                }
             </script>
         <% } %>
     </div>
@@ -21,9 +25,13 @@
             <script>
                 const closeEl = document.getElementById("close")
                 const notifyEl = document.getElementById("notify")
-                closeEl.addEventListener("click", () => {
-                    notifyEl.innerHTML = ""
-                })
+                if (window.location.href.includes("login") || window.location.href.includes("signup")) {
+                    closeEl.innerHTML = ""
+                } else {
+                    closeEl.addEventListener("click", () => {
+                        notifyEl.innerHTML = ""
+                    })
+                }
             </script>
         <% } %>
     </div>
@@ -35,9 +43,13 @@
             <script>
                 const closeEl = document.getElementById("close")
                 const notifyEl = document.getElementById("notify")
-                closeEl.addEventListener("click", () => {
-                    notifyEl.innerHTML = ""
-                })
+                if (window.location.href.includes("login") || window.location.href.includes("signup")) {
+                    closeEl.innerHTML = ""
+                } else {
+                    closeEl.addEventListener("click", () => {
+                        notifyEl.innerHTML = ""
+                    })
+                }
             </script>
         <% } %>
     </div>

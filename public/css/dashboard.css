@@ -62,7 +62,7 @@ main div > h1 {
 .add,
 .cancel,
 .new-session,
-.edit-session,
+.edit-sport,
 .view-session,
 .join,
 .leave,
@@ -84,7 +84,7 @@ main div > h1 {
 .add:hover,
 .cancel:hover,
 .new-session:hover,
-.edit-session:hover,
+.edit-sport:hover,
 .expel:hover,
 .view-session:hover,
 .join:hover,
@@ -146,7 +146,7 @@ main div > h1 {
     padding: 5px 6px 5px 12px;
     box-sizing: border-box;
     word-break: break-word;
-    width: fit-content;
+    width: 300px;
     height: fit-content;
     color: white;
     text-align: left;

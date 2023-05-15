@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="<%= csrfToken %>" name="_csrf">
+    <title><%= title %></title>
+    <link href="../../css/dashboard.css" rel="stylesheet">
+    <link href="../../css/nav.css" rel="stylesheet">
+    <link href="../../css/new.css" rel="stylesheet">
+</head>
+<body>
+<%- include("nav.ejs",{admin:admin,link:"sports"}) %>
+<%- include("notification.ejs") %>
+<main>
+    <div class="breadcrumb">
+        <ul>
+            <li><a href="/sports">Sports</a></li>
+            <li>/</li>
+            <li><a href="/sports/<%= currentSport %>/"><%= currentSport %></a></li>
+            <li>/</li>
+            <li><a href="#">Edit-Sport</a></li>
+        </ul>
+    </div>
+    <div class="intro">
+        <h1>Edit Sport</h1>
+        <div class="buttons">
+            <a href="/sports/<%= currentSport %>" class="cancel">Cancel</a>
+        </div>
+    </div>
+    <form id="edit-Sport" action="/sports/<%= currentSport %>/edit-sport" method="post">
+        <input name="_csrf" type="hidden" value="<%= csrfToken %>">
+        <div class="form-group">
+            <label for="sport">Sport</label>
+            <input id="sport" name="sport" type="text" value="<%= currentSport %>" required>
+            <button class="add" type="submit">Update</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>
