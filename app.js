@@ -10,7 +10,6 @@ const {
   sportSessions,
 } = require("./functions");
 
-const moment = require("moment");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const csurf = require("tiny-csrf");
@@ -270,7 +269,6 @@ app.get("/sports/:sport/new-session", isLoggedIn, async (req, res) => {
       title: `New ${req.params.sport} Session`,
       sport: req.params.sport,
       admin: admin,
-      minDate: moment().format(`YYYY-MM-DD`),
     });
   } catch (error) {
     console.log(error);
@@ -281,19 +279,28 @@ app.get("/sports/:sport/new-session", isLoggedIn, async (req, res) => {
 
 app.post("/sports/:sport/new-session", isLoggedIn, async (req, res) => {
   try {
+    const sportId = await Sport.getSportId(req.params.sport);
     if (new Date(req.body.date) < new Date()) {
       res.locals.messages = req.flash("error", `Date cannot be in the past`);
       res.redirect("/sports/" + req.params.sport + "/new-session");
-      return;
+    } else if (req.body.remaining < 0) {
+      res.locals.messages = req.flash(
+        "error",
+        `Remaining spots cannot be less than 0`
+      );
+      res.redirect("/sports/" + req.params.sport + "/new-session");
+    } else {
+      const session = await Session.createNewSession(
+        req.user.id,
+        req.body,
+        sportId
+      );
+      res.locals.messages = req.flash(
+        "success",
+        "Session successfully created"
+      );
+      res.redirect("/sports/" + req.params.sport + "/" + session.id);
     }
-    const sportId = await Sport.getSportId(req.params.sport);
-    const session = await Session.createNewSession(
-      req.user.id,
-      req.body,
-      sportId
-    );
-    res.locals.messages = req.flash("success", "Session successfully created");
-    res.redirect("/sports/" + req.params.sport + "/" + session.id);
   } catch (error) {
     console.log(error);
     res.locals.messages = req.flash("error", error.errors[0].message);
@@ -321,6 +328,11 @@ app.get("/sports/:sport/edit-sport", isAdmin, async (req, res) => {
 app.post("/sports/:sport/edit-sport", isAdmin, async (req, res) => {
   try {
     const sportId = await Sport.getSportId(req.params.sport);
+    if (req.body.sport === req.params.sport) {
+      res.locals.messages = req.flash("error", `Sport name cannot be the same`);
+      res.redirect("/sports/" + req.params.sport + "/edit-sport");
+      return;
+    }
     await Sport.updateSport(sportId, capitalizeString(req.body.sport));
     res.locals.messages = req.flash("success", "Sport successfully updated");
     res.redirect("/sports/" + capitalizeString(req.body.sport));
@@ -336,6 +348,7 @@ app.get("/sports/:sport/:id", isLoggedIn, async (req, res) => {
     await Sport.getSportId(req.params.sport);
     const session = await sessionGenerator(
       await Session.getSessionById(req.params.id),
+      true,
       true
     );
     let admin = req.user.admin;
@@ -353,12 +366,80 @@ app.get("/sports/:sport/:id", isLoggedIn, async (req, res) => {
   }
 });
 
+app.get("/sports/:sport/:id/edit-session", isLoggedIn, async (req, res) => {
+  try {
+    await Sport.getSportId(req.params.sport);
+    let session = await sessionGenerator(
+      await Session.getSessionById(req.params.id),
+      true
+    );
+    let admin = req.user.admin;
+    if (session[0].date < new Date()) {
+      res.locals.messages = req.flash("info", `Session already over`);
+      res.redirect("/sports/" + req.params.sport + "/" + req.params.id);
+    } else if (session[0].cancel) {
+      res.locals.messages = req.flash("info", `Session already cancelled`);
+      res.redirect("/sports/" + req.params.sport + "/" + req.params.id);
+    } else if (session[0].userId === req.user.id) {
+      res.render("edit-session", {
+        csrfToken: req.csrfToken(),
+        title: `Edit ${req.params.sport} #${req.params.id} Session`,
+        session: session,
+        admin: admin,
+      });
+    } else {
+      res.locals.messages = req.flash("info", `User not authorized`);
+      res.redirect("/sports/" + req.params.sport + "/" + req.params.id);
+    }
+  } catch (error) {
+    console.log(error);
+    res.locals.messages = req.flash("error", `Sport or Session does not exist`);
+    res.redirect("/sports");
+  }
+});
+
+app.post("/sports/:sport/:id/edit-session", isLoggedIn, async (req, res) => {
+  try {
+    await Sport.getSportId(req.params.sport);
+    if (req.body.date < new Date()) {
+      res.locals.messages = req.flash("error", `Date cannot be in the past`);
+      res.redirect(
+        "/sports/" + req.params.sport + "/" + req.params.id + "/edit-session"
+      );
+    } else if (req.body.remaining < 0) {
+      res.locals.messages = req.flash(
+        "error",
+        `Remaining spots cannot be less than 0`
+      );
+      res.redirect(
+        "/sports/" + req.params.sport + "/" + req.params.id + "/edit-session"
+      );
+    } else {
+      await Session.updateSession(req.params.id, req.body);
+      res.locals.messages = req.flash(
+        "success",
+        "Session successfully updated"
+      );
+      res.redirect("/sports/" + req.params.sport + "/" + req.params.id);
+    }
+  } catch (error) {
+    console.log(error);
+    res.locals.messages = req.flash("error", error.errors[0].message);
+    res.redirect(
+      "/sports/" + req.params.sport + "/" + req.params.id + "/edit-session"
+    );
+  }
+});
+
 app.get("/sports/:sport/:id/join", isLoggedIn, async (req, res) => {
   try {
     await Sport.getSportId(req.params.sport);
     const session = await Session.getSessionById(req.params.id);
     if (session.date < new Date()) {
       res.locals.messages = req.flash("info", `Session already over`);
+      res.redirect("/sports/" + req.params.sport + "/" + req.params.id);
+    } else if (session.cancel) {
+      res.locals.messages = req.flash("info", `Session already cancelled`);
       res.redirect("/sports/" + req.params.sport + "/" + req.params.id);
     } else if (session.membersList.includes(req.user.email)) {
       res.locals.messages = req.flash("info", `Already joined the Session`);
@@ -381,6 +462,9 @@ app.get("/sports/:sport/:id/:index/leave", isLoggedIn, async (req, res) => {
     const session = await Session.getSessionById(req.params.id);
     if (session.date < new Date()) {
       res.locals.messages = req.flash("info", `Session already over`);
+      res.redirect("/sports/" + req.params.sport + "/" + req.params.id);
+    } else if (session.cancel) {
+      res.locals.messages = req.flash("info", `Session already cancelled`);
       res.redirect("/sports/" + req.params.sport + "/" + req.params.id);
     } else if (session.membersList.length < req.params.index) {
       res.locals.messages = req.flash("info", `User not present in Session`);

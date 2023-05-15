@@ -24,7 +24,9 @@
         <h1><%= sport %></h1>
         <div class="buttons">
             <a href="/sports/<%= sport %>/new-session" class="new-session">New Session</a>
-            <a href="/sports/<%= sport %>/edit-sport" class="edit-sport">Edit Sport</a>
+            <% if(admin){ %>
+                <a href="/sports/<%= sport %>/edit-sport" class="edit-sport">Edit Sport</a>
+            <% } %>
         </div>
     </div>
     <%- include("session-template.ejs",{title:"Upcoming sessions",session:newSessions,displayPrompt:displayPrompt}) %>

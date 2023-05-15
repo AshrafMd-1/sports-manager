@@ -53,6 +53,45 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
+    static updateSession(id, body) {
+      const dateBody = body.date.split("-").map((item) => parseInt(item));
+      const timeBody = body.time.split(":").map((item) => parseInt(item));
+      body.date = moment().set({
+        year: dateBody[0],
+        month: dateBody[1] - 1,
+        date: dateBody[2],
+        hour: timeBody[0],
+        minute: timeBody[1],
+        second: 0,
+      });
+      let filteredMembersList = body.membersList
+        .split(",")
+        .filter((item) => item);
+      const membersList = filteredMembersList.map((items) =>
+        items
+          .split(" ")
+          .map(
+            (item) => item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()
+          )
+          .join(" ")
+      );
+      return this.update(
+        {
+          location: body.location,
+          date: body.date,
+          membersList: Array.from(new Set(membersList)),
+          remaining: body.remaining,
+          cancel: false,
+          reason: "",
+        },
+        {
+          where: {
+            id: id,
+          },
+        }
+      );
+    }
+
     static async getSessionById(id) {
       const session = await this.findOne({
         where: {

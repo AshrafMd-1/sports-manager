@@ -62,6 +62,8 @@ main div > h1 {
 .add,
 .cancel,
 .new-session,
+.edit-session,
+.cancel-session,
 .edit-sport,
 .view-session,
 .join,
@@ -84,6 +86,8 @@ main div > h1 {
 .add:hover,
 .cancel:hover,
 .new-session:hover,
+.edit-session:hover,
+.cancel-session:hover,
 .edit-sport:hover,
 .expel:hover,
 .view-session:hover,
@@ -103,6 +107,11 @@ main div > h1 {
 .leave:hover,
 .expel:hover {
     padding: 8px;
+}
+
+.cancel-session {
+    background-color: red;
+    color: white;
 }
 
 .no-sessions,
@@ -152,7 +161,6 @@ main div > h1 {
     text-align: left;
     animation: flash 1s both ease-in-out 5s;
 }
-
 
 .notify .error p {
     background-color: #d07676;

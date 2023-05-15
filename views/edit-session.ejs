@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="<%= csrfToken %>" name="_csrf">
+    <title><%= title %></title>
+    <link href="../../../css/dashboard.css" rel="stylesheet">
+    <link href="../../../css/nav.css" rel="stylesheet">
+    <link href="../../../css/new.css" rel="stylesheet">
+</head>
+<body>
+<%- include("nav.ejs",{link:"sports"}) %>
+<%- include("notification.ejs") %>
+<main>
+    <div class="breadcrumb">
+        <ul>
+            <li><a href="/sports">Sports</a></li>
+            <li>/</li>
+            <li><a href="/sports/<%= session[0].sport %>"><%= session[0].sport %></a></li>
+            <li>/</li>
+            <li><a href="/sports/<%= session[0].sport %>/<%= session[0].id %>">#<%= session[0].id %></a></li>
+            <li>/</li>
+            <li><a href="#">Edit-Session</a></li>
+        </ul>
+    </div>
+    <div class="intro">
+        <h1>Edit Session <%= session[0].sport %> #<%= session[0].id %></h1>
+        <div class="buttons">
+            <a href="/sports/<%= session[0].sport %>/<%= session[0].id %>" class="cancel">Cancel</a>
+        </div>
+    </div>
+    <form id="edit-Session" action="/sports/<%= session[0].sport %>/<%= session[0].id %>/edit-session" method="post">
+        <input name="_csrf" type="hidden" value="<%= csrfToken %>">
+        <div class="form-group">
+            <label for="location">Location</label>
+            <input id="location" name="location" type="text" value="<%= session[0].location %>" required>
+            <label for="date">Date</label>
+            <input min="<%= new Date().toISOString().slice(0, 10) %>" id="date" name="date" type="date"
+                   value="<%= new Date(session[0].date).toISOString().slice(0, 10) %>" required>
+            <label for="time">Time</label>
+            <input id="time" name="time" type="time"
+                   value="<%= new Date(session[0].date).toISOString().slice(11, 16) %>" required>
+            <label for="membersList">Members</label>
+            <span class="info">Comma seperated names</span>
+            <input id="membersList"
+                   value="<%= session[0].membersList.filter((member) => typeof member === "string").join(", ") %>"
+                   name="membersList" type="text" placeholder="name1,name2,@name3...">
+            <label for="remaining">Remaining:</label>
+            <input id="remaining" name="remaining" min="0" value="<%= session[0].remaining %>" type="number" required>
+            <button class="add" type="submit">Update</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>
