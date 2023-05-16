@@ -230,8 +230,7 @@ describe("Test Functionality of the sport scheduler app", function () {
           const agent = request.agent(server);
           await login(agent, "johnwick@gmail.com", "password");
           const res = await agent.get("/report");
-          console.log(res.statusCode);
-          console.log(res.text);
+          expect(res.statusCode).toBe(302);
         });
       });
     });
