@@ -45,7 +45,7 @@
             <span class="info">Comma seperated names</span>
             <input id="membersList"
                    value="<%= session[0].membersList.filter((member) => typeof member === "string").join(", ") %>"
-                   name="membersList" type="text" placeholder="name1,name2,@name3...">
+                   name="membersList" type="text" placeholder="name1,name2,name3...">
             <label for="remaining">Remaining:</label>
             <input id="remaining" name="remaining" min="0" value="<%= session[0].remaining %>" type="number" required>
             <button class="add" type="submit">Update</button>
