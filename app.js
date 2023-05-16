@@ -667,10 +667,5 @@ app.get("/logout", (req, res, next) => {
   });
 });
 
-// Get 404 Page
-// app.get("*", (req, res) => {
-//     console.log("404");
-// });
-
-// Server
+// Export app
 module.exports = app;
