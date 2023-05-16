@@ -115,7 +115,8 @@ main div > h1 {
     padding: 8px;
 }
 
-.cancel-session, .delete {
+.cancel-session,
+.delete {
     background-color: red;
     color: white;
 }

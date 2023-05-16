@@ -1,5 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+
 const path = require("path");
 const { User, Sport, Session } = require("./models");
 const {
@@ -131,6 +132,7 @@ const isAdmin = (req, res, next) => {
   }
 };
 
+// Get Home Page
 app.get("/", alreadyLoggedIn, async (req, res) => {
   res.render("homepage", {
     csrfToken: req.csrfToken(),
@@ -138,6 +140,7 @@ app.get("/", alreadyLoggedIn, async (req, res) => {
   });
 });
 
+// Get Sign-Up Page
 app.get("/signup", alreadyLoggedIn, (req, res) => {
   res.render("signup", {
     csrfToken: req.csrfToken(),
@@ -145,6 +148,7 @@ app.get("/signup", alreadyLoggedIn, (req, res) => {
   });
 });
 
+// Post Sign-Up Page
 app.post("/signup", async (req, res) => {
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
   const role = req.body.role.toLowerCase() === "admin";
@@ -158,6 +162,7 @@ app.post("/signup", async (req, res) => {
   }
 });
 
+// Get Login Page
 app.get("/login", alreadyLoggedIn, (req, res) => {
   res.render("login", {
     csrfToken: req.csrfToken(),
@@ -165,6 +170,7 @@ app.get("/login", alreadyLoggedIn, (req, res) => {
   });
 });
 
+// Post Login Page
 app.post(
   "/login",
   passport.authenticate("local", {
@@ -174,6 +180,7 @@ app.post(
   })
 );
 
+// Get Dashboard Page
 app.get("/dashboard", isLoggedIn, async (req, res) => {
   const user = capitalizeName(req.user);
   const joinedSessions = await sessionGenerator(
@@ -198,6 +205,7 @@ app.get("/dashboard", isLoggedIn, async (req, res) => {
   });
 });
 
+// Get Sports Page
 app.get("/sports", isLoggedIn, async (req, res) => {
   const sports = await sportGenerator(await Sport.getAllSports());
   const admin = req.user.admin;
@@ -209,6 +217,7 @@ app.get("/sports", isLoggedIn, async (req, res) => {
   });
 });
 
+// Get Create Sport Page
 app.get("/sports/new-sport", isAdmin, (req, res) => {
   const admin = req.user.admin;
   res.render("new-sport", {
@@ -218,6 +227,7 @@ app.get("/sports/new-sport", isAdmin, (req, res) => {
   });
 });
 
+// Post Create Sport Page
 app.post("/sports/new-sport", isAdmin, async (req, res) => {
   try {
     await Sport.createNewSport(req.user.id, capitalizeString(req.body.sport));
@@ -230,6 +240,44 @@ app.post("/sports/new-sport", isAdmin, async (req, res) => {
   }
 });
 
+// Get Edit Sport Page
+app.get("/sports/:sport/edit-sport", isAdmin, async (req, res) => {
+  try {
+    await Sport.getSportId(req.params.sport);
+    let admin = req.user.admin;
+    res.render("edit-sport", {
+      csrfToken: req.csrfToken(),
+      title: `Update Sport`,
+      currentSport: req.params.sport,
+      admin: admin,
+    });
+  } catch (error) {
+    console.log(error);
+    res.locals.messages = req.flash("error", `Sport does not exist`);
+    res.redirect("/sports/" + req.params.sport);
+  }
+});
+
+// Post Edit Sport Page
+app.post("/sports/:sport/edit-sport", isAdmin, async (req, res) => {
+  try {
+    const sportId = await Sport.getSportId(req.params.sport);
+    if (req.body.sport === req.params.sport) {
+      res.locals.messages = req.flash("error", `Sport name cannot be the same`);
+      res.redirect("/sports/" + req.params.sport + "/edit-sport");
+      return;
+    }
+    await Sport.updateSport(sportId, capitalizeString(req.body.sport));
+    res.locals.messages = req.flash("success", "Sport successfully updated");
+    res.redirect("/sports/" + capitalizeString(req.body.sport));
+  } catch (error) {
+    console.log(error);
+    res.locals.messages = req.flash("error", `Sport does not exist`);
+    res.redirect("/sports/" + req.params.sport);
+  }
+});
+
+// Get Sessions Page
 app.get("/sports/:sport", isLoggedIn, async (req, res) => {
   try {
     const sportId = await Sport.getSportId(req.params.sport);
@@ -260,6 +308,7 @@ app.get("/sports/:sport", isLoggedIn, async (req, res) => {
   }
 });
 
+// Get Create Session Page
 app.get("/sports/:sport/new-session", isLoggedIn, async (req, res) => {
   try {
     await Sport.getSportId(req.params.sport);
@@ -277,6 +326,7 @@ app.get("/sports/:sport/new-session", isLoggedIn, async (req, res) => {
   }
 });
 
+// Post Create Session Page
 app.post("/sports/:sport/new-session", isLoggedIn, async (req, res) => {
   try {
     const sportId = await Sport.getSportId(req.params.sport);
@@ -308,64 +358,7 @@ app.post("/sports/:sport/new-session", isLoggedIn, async (req, res) => {
   }
 });
 
-app.get("/sports/:sport/edit-sport", isAdmin, async (req, res) => {
-  try {
-    await Sport.getSportId(req.params.sport);
-    let admin = req.user.admin;
-    res.render("edit-sport", {
-      csrfToken: req.csrfToken(),
-      title: `Update Sport`,
-      currentSport: req.params.sport,
-      admin: admin,
-    });
-  } catch (error) {
-    console.log(error);
-    res.locals.messages = req.flash("error", `Sport does not exist`);
-    res.redirect("/sports/" + req.params.sport);
-  }
-});
-
-app.post("/sports/:sport/edit-sport", isAdmin, async (req, res) => {
-  try {
-    const sportId = await Sport.getSportId(req.params.sport);
-    if (req.body.sport === req.params.sport) {
-      res.locals.messages = req.flash("error", `Sport name cannot be the same`);
-      res.redirect("/sports/" + req.params.sport + "/edit-sport");
-      return;
-    }
-    await Sport.updateSport(sportId, capitalizeString(req.body.sport));
-    res.locals.messages = req.flash("success", "Sport successfully updated");
-    res.redirect("/sports/" + capitalizeString(req.body.sport));
-  } catch (error) {
-    console.log(error);
-    res.locals.messages = req.flash("error", `Sport does not exist`);
-    res.redirect("/sports/" + req.params.sport);
-  }
-});
-
-app.get("/sports/:sport/:id", isLoggedIn, async (req, res) => {
-  try {
-    await Sport.getSportId(req.params.sport);
-    const session = await sessionGenerator(
-      await Session.getSessionById(req.params.id),
-      true,
-      true
-    );
-    let admin = req.user.admin;
-    res.render("session-info", {
-      csrfToken: req.csrfToken(),
-      title: `${req.params.sport} #${req.params.id} Session`,
-      session: session,
-      user: req.user.id,
-      admin: admin,
-    });
-  } catch (error) {
-    console.log(error);
-    res.locals.messages = req.flash("error", `Sport or Session does not exist`);
-    res.redirect("/sports");
-  }
-});
-
+// Get Edit Session Page
 app.get("/sports/:sport/:id/edit-session", isLoggedIn, async (req, res) => {
   try {
     await Sport.getSportId(req.params.sport);
@@ -398,6 +391,7 @@ app.get("/sports/:sport/:id/edit-session", isLoggedIn, async (req, res) => {
   }
 });
 
+// Post Edit Session Page
 app.post("/sports/:sport/:id/edit-session", isLoggedIn, async (req, res) => {
   try {
     await Sport.getSportId(req.params.sport);
@@ -431,6 +425,31 @@ app.post("/sports/:sport/:id/edit-session", isLoggedIn, async (req, res) => {
   }
 });
 
+// Get Session Info Page
+app.get("/sports/:sport/:id", isLoggedIn, async (req, res) => {
+  try {
+    await Sport.getSportId(req.params.sport);
+    const session = await sessionGenerator(
+      await Session.getSessionById(req.params.id),
+      true,
+      true
+    );
+    let admin = req.user.admin;
+    res.render("session-info", {
+      csrfToken: req.csrfToken(),
+      title: `${req.params.sport} #${req.params.id} Session`,
+      session: session,
+      user: req.user.id,
+      admin: admin,
+    });
+  } catch (error) {
+    console.log(error);
+    res.locals.messages = req.flash("error", `Sport or Session does not exist`);
+    res.redirect("/sports");
+  }
+});
+
+// Get Join Session Info Page
 app.get("/sports/:sport/:id/join", isLoggedIn, async (req, res) => {
   try {
     await Sport.getSportId(req.params.sport);
@@ -456,6 +475,7 @@ app.get("/sports/:sport/:id/join", isLoggedIn, async (req, res) => {
   }
 });
 
+// Get Leave Session Info Page
 app.get("/sports/:sport/:id/:index/leave", isLoggedIn, async (req, res) => {
   try {
     await Sport.getSportId(req.params.sport);
@@ -487,6 +507,7 @@ app.get("/sports/:sport/:id/:index/leave", isLoggedIn, async (req, res) => {
   }
 });
 
+// Get Cancel Session Info Page
 app.get("/sports/:sport/:id/cancel-session", isLoggedIn, async (req, res) => {
   try {
     await Sport.getSportId(req.params.sport);
@@ -519,6 +540,7 @@ app.get("/sports/:sport/:id/cancel-session", isLoggedIn, async (req, res) => {
   }
 });
 
+// Post Cancel Session Info Page
 app.post("/sports/:sport/:id/cancel-session", isLoggedIn, async (req, res) => {
   try {
     await Sport.getSportId(req.params.sport);
@@ -535,6 +557,7 @@ app.post("/sports/:sport/:id/cancel-session", isLoggedIn, async (req, res) => {
   }
 });
 
+// Get report Page
 app.get("/report", isAdmin, async (req, res) => {
   const admin = req.user.admin;
   const user = capitalizeName(req.user);
@@ -561,6 +584,7 @@ app.get("/report", isAdmin, async (req, res) => {
   });
 });
 
+// Get Profile Page
 app.get("/profile", isLoggedIn, async (req, res) => {
   res.render("profile", {
     csrfToken: req.csrfToken(),
@@ -571,6 +595,7 @@ app.get("/profile", isLoggedIn, async (req, res) => {
   });
 });
 
+// Get Edit Profile Page
 app.get("/profile/edit", isLoggedIn, async (req, res) => {
   let admin = req.user.admin;
   res.render("edit-user", {
@@ -581,6 +606,7 @@ app.get("/profile/edit", isLoggedIn, async (req, res) => {
   });
 });
 
+// Post Edit Profile Page
 app.post("/profile/edit", isLoggedIn, async (req, res) => {
   try {
     await User.updateUser(req.user.id, req.body);
@@ -593,6 +619,7 @@ app.post("/profile/edit", isLoggedIn, async (req, res) => {
   }
 });
 
+// Get Change Password Page
 app.get("/profile/change-password", isLoggedIn, async (req, res) => {
   let admin = req.user.admin;
   res.render("edit-pass", {
@@ -602,6 +629,7 @@ app.get("/profile/change-password", isLoggedIn, async (req, res) => {
   });
 });
 
+// Post Change Password Page
 app.post("/profile/change-password", isLoggedIn, async (req, res) => {
   try {
     if (!(await bcrypt.compare(req.body.oldPassword, req.user.password))) {
@@ -628,6 +656,7 @@ app.post("/profile/change-password", isLoggedIn, async (req, res) => {
   }
 });
 
+// Get Logout Page
 app.get("/logout", (req, res, next) => {
   req.logout((error) => {
     if (error) {
@@ -638,4 +667,10 @@ app.get("/logout", (req, res, next) => {
   });
 });
 
+// Get 404 Page
+// app.get("*", (req, res) => {
+//     console.log("404");
+// });
+
+// Server
 module.exports = app;

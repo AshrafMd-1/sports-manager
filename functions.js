@@ -10,16 +10,35 @@ const capitalizeName = (user) => {
   );
 };
 
-const sportName = (session) => {
-  return Sport.getSport(session.sportId);
-};
-
 const userName = (userId) => {
   return User.getUserDetailsById(userId);
 };
 
 const userEmail = (email) => {
   return User.getUserDetailsByEmail(email);
+};
+
+const sportName = (session) => {
+  return Sport.getSport(session.sportId);
+};
+
+const sportSessions = (session) => {
+  let sports = {};
+  for (let i = 0; i < session.length; i++) {
+    if (sports[session[i].sport] === undefined) {
+      sports[session[i].sport] = 1;
+    } else {
+      sports[session[i].sport] += 1;
+    }
+  }
+  return sports;
+};
+
+const sportGenerator = async (sports) => {
+  for (let i = 0; i < sports.length; i++) {
+    sports[i].user = capitalizeName(await userName(sports[i].userId));
+  }
+  return sports;
 };
 
 const sessionGenerator = async (
@@ -50,25 +69,6 @@ const sessionGenerator = async (
     }
   }
   return sessions;
-};
-
-const sportGenerator = async (sports) => {
-  for (let i = 0; i < sports.length; i++) {
-    sports[i].user = capitalizeName(await userName(sports[i].userId));
-  }
-  return sports;
-};
-
-const sportSessions = (session) => {
-  let sports = {};
-  for (let i = 0; i < session.length; i++) {
-    if (sports[session[i].sport] === undefined) {
-      sports[session[i].sport] = 1;
-    } else {
-      sports[session[i].sport] += 1;
-    }
-  }
-  return sports;
 };
 
 module.exports = {

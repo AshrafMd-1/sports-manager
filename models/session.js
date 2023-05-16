@@ -92,28 +92,6 @@ module.exports = (sequelize, DataTypes) => {
       );
     }
 
-    static async cancelSession(id, reason) {
-      const session = await this.findOne({
-        where: {
-          id: id,
-        },
-      });
-      if (!session) {
-        throw new Error("Session not found");
-      }
-      return this.update(
-        {
-          cancel: true,
-          reason: reason,
-        },
-        {
-          where: {
-            id: id,
-          },
-        }
-      );
-    }
-
     static async getSessionById(id) {
       const session = await this.findOne({
         where: {
@@ -135,6 +113,105 @@ module.exports = (sequelize, DataTypes) => {
         throw new Error("Session not found");
       }
       return session.dataValues;
+    }
+
+    static async getSessionByDate(body) {
+      const offset = 24 * 60;
+      let session = await this.findAll({
+        where: {
+          createdAt: {
+            [Op.between]: [
+              moment(body.start)
+                .add(offset - 1110, "minutes")
+                .toDate(),
+              moment(body.end)
+                .add(offset + 329, "minutes")
+                .toDate(),
+            ],
+          },
+        },
+        attributes: [
+          "id",
+          "location",
+          "date",
+          "membersList",
+          "remaining",
+          "sportId",
+          "userId",
+          "cancel",
+        ],
+      });
+      if (!session) {
+        throw new Error("No session found");
+      }
+      return session.map((item) => item.dataValues);
+    }
+
+    static async getCreatedSessions(userId) {
+      const sessions = await this.findAll({
+        where: {
+          userId: userId,
+          cancel: false,
+          date: {
+            [Op.gte]: new Date(),
+          },
+        },
+        attributes: [
+          "id",
+          "location",
+          "date",
+          "remaining",
+          "sportId",
+          "userId",
+        ],
+      });
+      return sessions.map((item) => item.dataValues);
+    }
+
+    static async getJoinedSessions(email) {
+      const sessions = await this.findAll({
+        where: {
+          membersList: {
+            [Op.contains]: [email],
+          },
+          date: {
+            [Op.gte]: new Date(),
+          },
+          cancel: false,
+        },
+        attributes: [
+          "id",
+          "location",
+          "date",
+          "remaining",
+          "sportId",
+          "userId",
+        ],
+      });
+      return sessions.map((item) => item.dataValues);
+    }
+
+    static async getCanceledSessions(email) {
+      const sessions = await this.findAll({
+        where: {
+          membersList: {
+            [Op.contains]: [email],
+          },
+          date: {
+            [Op.gte]: new Date(),
+          },
+          cancel: true,
+        },
+        attributes: [
+          "id",
+          "location",
+          "date",
+          "remaining",
+          "sportId",
+          "userId",
+        ],
+      });
+      return sessions.map((item) => item.dataValues);
     }
 
     static async getOlderSessions(sportId) {
@@ -181,73 +258,6 @@ module.exports = (sequelize, DataTypes) => {
       return newSession.map((item) => item.dataValues);
     }
 
-    static async getCreatedSessions(userId) {
-      const sessions = await this.findAll({
-        where: {
-          userId: userId,
-          cancel: false,
-        },
-        attributes: [
-          "id",
-          "location",
-          "date",
-          "remaining",
-          "sportId",
-          "userId",
-        ],
-      });
-      const session = sessions.filter(
-        (item) => new Date(item.dataValues.date) > new Date()
-      );
-      return session.map((item) => item.dataValues);
-    }
-
-    static async getJoinedSessions(email) {
-      const sessions = await this.findAll({
-        where: {
-          membersList: {
-            [Op.contains]: [email],
-          },
-          cancel: false,
-        },
-        attributes: [
-          "id",
-          "location",
-          "date",
-          "remaining",
-          "sportId",
-          "userId",
-        ],
-      });
-      const session = sessions.filter(
-        (item) => new Date(item.dataValues.date) > new Date()
-      );
-      return session.map((item) => item.dataValues);
-    }
-
-    static async getCanceledSessions(email) {
-      const sessions = await this.findAll({
-        where: {
-          membersList: {
-            [Op.contains]: [email],
-          },
-          cancel: true,
-        },
-        attributes: [
-          "id",
-          "location",
-          "date",
-          "remaining",
-          "sportId",
-          "userId",
-        ],
-      });
-      const session = sessions.filter(
-        (item) => new Date(item.dataValues.date) > new Date()
-      );
-      return session.map((item) => item.dataValues);
-    }
-
     static async joinSession(email, sessionId) {
       const session = await this.getSessionById(sessionId);
       session.membersList.push(email);
@@ -280,36 +290,26 @@ module.exports = (sequelize, DataTypes) => {
       );
     }
 
-    static async getSessionByDate(body) {
-      const offset = 24 * 60;
-      let session = await this.findAll({
+    static async cancelSession(id, reason) {
+      const session = await this.findOne({
         where: {
-          createdAt: {
-            [Op.between]: [
-              moment(body.start)
-                .add(offset - 1110, "minutes")
-                .toDate(),
-              moment(body.end)
-                .add(offset + 329, "minutes")
-                .toDate(),
-            ],
-          },
+          id: id,
         },
-        attributes: [
-          "id",
-          "location",
-          "date",
-          "membersList",
-          "remaining",
-          "sportId",
-          "userId",
-          "cancel",
-        ],
       });
       if (!session) {
-        throw new Error("No session found");
+        throw new Error("Session not found");
       }
-      return session.map((item) => item.dataValues);
+      return this.update(
+        {
+          cancel: true,
+          reason: reason,
+        },
+        {
+          where: {
+            id: id,
+          },
+        }
+      );
     }
   }
 

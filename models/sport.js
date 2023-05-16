@@ -17,17 +17,24 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static async getSportId(sport) {
-      const sportId = await this.findOne({
-        where: {
+    static createNewSport(userId, sport) {
+      return this.create({
+        sport,
+        userId,
+      });
+    }
+
+    static async updateSport(id, sport) {
+      return await this.update(
+        {
           sport: sport,
         },
-        attributes: ["id"],
-      });
-      if (!sportId) {
-        throw new Error("Sport not found");
-      }
-      return sportId.dataValues.id;
+        {
+          where: {
+            id: id,
+          },
+        }
+      );
     }
 
     static async getAllSports() {
@@ -47,24 +54,17 @@ module.exports = (sequelize, DataTypes) => {
       return sport.dataValues.sport;
     }
 
-    static createNewSport(userId, sport) {
-      return this.create({
-        sport,
-        userId,
-      });
-    }
-
-    static async updateSport(id, sport) {
-      return await this.update(
-        {
+    static async getSportId(sport) {
+      const sportId = await this.findOne({
+        where: {
           sport: sport,
         },
-        {
-          where: {
-            id: id,
-          },
-        }
-      );
+        attributes: ["id"],
+      });
+      if (!sportId) {
+        throw new Error("Sport not found");
+      }
+      return sportId.dataValues.id;
     }
   }
 
