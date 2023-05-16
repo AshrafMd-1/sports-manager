@@ -284,12 +284,14 @@ app.get("/sports/:sport", isLoggedIn, async (req, res) => {
     const oldSessions = await sessionGenerator(
       await Session.getOlderSessions(sportId),
       true,
-      true
+      true,
+      req.user.id
     );
     const newSessions = await sessionGenerator(
       await Session.getNewerSessions(sportId),
       true,
-      true
+      true,
+      req.user.id
     );
     const admin = req.user.admin;
     res.render("session", {
@@ -432,7 +434,8 @@ app.get("/sports/:sport/:id", isLoggedIn, async (req, res) => {
     const session = await sessionGenerator(
       await Session.getSessionById(req.params.id),
       true,
-      true
+      true,
+      req.user.id
     );
     let admin = req.user.admin;
     res.render("session-info", {
@@ -569,7 +572,8 @@ app.get("/report", isAdmin, async (req, res) => {
   const sessions = await sessionGenerator(
     await Session.getSessionByDate(req.query),
     true,
-    true
+    true,
+    req.user.id
   );
   const sessionCount = sportSessions(sessions);
   res.render("report", {

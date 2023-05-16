@@ -44,7 +44,8 @@ const sportGenerator = async (sports) => {
 const sessionGenerator = async (
   sessions,
   hasMembers = false,
-  hasJoined = false
+  hasJoined = false,
+  id = null
 ) => {
   if (sessions.length === undefined) {
     sessions = [sessions];
@@ -58,10 +59,7 @@ const sessionGenerator = async (
           sessions[i].membersList[j] = await userEmail(
             sessions[i].membersList[j]
           );
-          if (
-            hasJoined &&
-            sessions[i].userId === sessions[i].membersList[j].id
-          ) {
+          if (hasJoined && id === sessions[i].membersList[j].id) {
             sessions[i].joined = true;
           }
         }

@@ -209,12 +209,13 @@ describe("Test Functionality of the sport scheduler app", function () {
               sport: "Hockey",
             });
             expect(res2.statusCode).toBe(302);
-            expect(res2.header.location).toBe("/sports/Hockey");
+            const res3 = await agent.get("/sports/Hockey");
+            expect(res3.statusCode).toBe(200);
           });
           test("Player should not be able to edit sport", async () => {
             const agent = request.agent(server);
             await login(agent, "johnwick@gmail.com", "password");
-            const res = await agent.get("/sports/Cricket/edit-sport");
+            const res = await agent.get("/sports/Hockey/edit-sport");
             expect(res.statusCode).toBe(302);
           });
         });

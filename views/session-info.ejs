@@ -105,13 +105,18 @@
                                     <span class="member-value"><%= session[0].membersList[i].email %></span>
                                 </div>
                             <% } %>
-                            <% if(!session[0].cancel){ %>
+                            <% if(!session[0].cancel && session[0].date > new Date()){ %>
                                 <% if(session[0].userId === user && session[0].membersList[i].id === session[0].userId){ %>
                                     <div class="member-text">
                                         <a href="/sports/<%= session[0].sport %>/<%= session[0].id %>/<%= i %>/leave"
                                            class="leave">Leave Session</a>
                                     </div>
-                                <% } else{ %>
+                                <% }else if(session[0].userId !== user && session[0].membersList[i].id === user){ %>
+                                    <div class="member-text">
+                                        <a href="/sports/<%= session[0].sport %>/<%= session[0].id %>/<%= i %>/leave"
+                                           class="leave">Leave Session</a>
+                                    </div>
+                                <% }else if(session[0].userId === user){ %>
                                     <div class="member-text">
                                         <a href="/sports/<%= session[0].sport %>/<%= session[0].id %>/<%= i %>/leave"
                                            class="expel">Expel User</a>
