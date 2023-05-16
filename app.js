@@ -175,7 +175,7 @@ app.post(
 );
 
 app.get("/dashboard", isLoggedIn, async (req, res) => {
-  const user = capitalizeName(await User.getUserDetailsById(req.user.id));
+  const user = capitalizeName(req.user);
   const joinedSessions = await sessionGenerator(
     await Session.getJoinedSessions(req.user.email)
   );
@@ -537,7 +537,7 @@ app.post("/sports/:sport/:id/cancel-session", isLoggedIn, async (req, res) => {
 
 app.get("/report", isAdmin, async (req, res) => {
   const admin = req.user.admin;
-  const user = capitalizeName(await User.getUserDetailsById(req.user.id));
+  const user = capitalizeName(req.user);
   if (!(req.query.start && req.query.end)) {
     const year = new Date().getFullYear();
     req.query.start = `${year}-01-01`;
@@ -559,6 +559,73 @@ app.get("/report", isAdmin, async (req, res) => {
     sessionCount: sessionCount,
     displayPrompt: true,
   });
+});
+
+app.get("/profile", isLoggedIn, async (req, res) => {
+  res.render("profile", {
+    csrfToken: req.csrfToken(),
+    title: "Profile",
+    admin: req.user.admin,
+    user: capitalizeName(req.user),
+    userDetail: req.user,
+  });
+});
+
+app.get("/profile/edit", isLoggedIn, async (req, res) => {
+  let admin = req.user.admin;
+  res.render("edit-user", {
+    csrfToken: req.csrfToken(),
+    title: "Edit Profile",
+    admin: admin,
+    user: req.user,
+  });
+});
+
+app.post("/profile/edit", isLoggedIn, async (req, res) => {
+  try {
+    await User.updateUser(req.user.id, req.body);
+    res.locals.messages = req.flash("success", "Profile Updated");
+    res.redirect("/profile");
+  } catch (error) {
+    console.log(error);
+    res.locals.messages = req.flash("error", error.errors[0].message);
+    res.redirect("/profile/edit");
+  }
+});
+
+app.get("/profile/change-password", isLoggedIn, async (req, res) => {
+  let admin = req.user.admin;
+  res.render("edit-pass", {
+    csrfToken: req.csrfToken(),
+    title: "Change Password",
+    admin: admin,
+  });
+});
+
+app.post("/profile/change-password", isLoggedIn, async (req, res) => {
+  try {
+    if (!(await bcrypt.compare(req.body.oldPassword, req.user.password))) {
+      res.locals.messages = req.flash("error", "Old Password is incorrect");
+      res.redirect("/profile/change-password");
+    } else if (await bcrypt.compare(req.body.newPassword, req.user.password)) {
+      res.locals.messages = req.flash(
+        "error",
+        "Old and New Passwords are same"
+      );
+      res.redirect("/profile/change-password");
+    } else {
+      await User.updatePassword(
+        req.user.id,
+        await bcrypt.hash(req.body.newPassword, 10)
+      );
+      res.locals.messages = req.flash("success", "Password Updated");
+      res.redirect("/profile");
+    }
+  } catch (error) {
+    console.log(error);
+    res.locals.messages = req.flash("error", error.errors[0].message);
+    res.redirect("/profile/change-password");
+  }
 });
 
 app.get("/logout", (req, res, next) => {

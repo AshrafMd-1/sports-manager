@@ -48,3 +48,33 @@ form {
     width: 360px;
     text-align: center;
 }
+
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+form label {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+form input {
+    width: 330px;
+    height: 23px;
+    border: 1px solid #333;
+    border-radius: 12px;
+    margin: 10px;
+    padding: 11px;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.signup-input {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

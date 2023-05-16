@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="<%= csrfToken %>" name="_csrf">
+    <title><%= title %></title>
+    <link href="../../css/dashboard.css" rel="stylesheet">
+    <link href="../../css/new.css" rel="stylesheet">
+    <link href="../../css/nav.css" rel="stylesheet">
+</head>
+<body>
+<%- include("nav.ejs",{admin:admin,link:""}) %>
+<%- include("notification.ejs") %>
+<main>
+    <div class="breadcrumb">
+        <ul>
+            <li><a href="/profile">Profile</a></li>
+            <li>/</li>
+            <li><a href="#">Change Password</a></li>
+        </ul>
+    </div>
+    <div class="intro">
+        <h1>Change Password</h1>
+        <div class="buttons">
+            <a href="/profile" class="cancel">Cancel</a>
+        </div>
+    </div>
+    <form action="/profile/change-password" class="signup-form" method="post">
+        <input name="_csrf" type="hidden" value="<%= csrfToken %>">
+        <div class="signup-input">
+            <label for="oldPassword">Old Password</label>
+            <input id="oldPassword" minlength="8" maxlength="30" name="oldPassword" placeholder="Old Password" required
+                   type="password">
+        </div>
+        <div class="signup-input">
+            <label for="newPassword">New Password</label>
+            <input id="newPassword" minlength="8" maxlength="30" name="newPassword" placeholder="New Password" required
+                   type="password">
+        </div>
+        <div class="signup-input">
+            <button class="submit" type="submit">Update</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>

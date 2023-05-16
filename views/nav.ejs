@@ -28,7 +28,25 @@
                     <li><a href="/report">Report</a></li>
                 <% } %>
             <% } %>
-            <li id="logout"><a href="/logout">Logout</a></li>
         </ul>
+        <div class="account">
+            <select id="account-select">
+                <option value="account" selected disabled>Account</option>
+                <option value="profile">Profile</option>
+                <option id="logout" value="logout">Logout</option>
+            </select>
+        </div>
     </div>
+    <script>
+        const accountSelect = document.getElementById('account-select');
+        accountSelect.addEventListener('change', (e) => {
+            const value = e.target.value;
+            accountSelect.selectedIndex = 0;
+            if (value === 'profile') {
+                window.location.href = '/profile';
+            } else if (value === 'logout') {
+                window.location.href = '/logout';
+            }
+        })
+    </script>
 </nav>

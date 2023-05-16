@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="<%= csrfToken %>" name="_csrf">
+    <title><%= title %></title>
+    <link href="../../css/dashboard.css" rel="stylesheet">
+    <link href="../../css/new.css" rel="stylesheet">
+    <link href="../../css/nav.css" rel="stylesheet">
+</head>
+<body>
+<%- include("nav.ejs",{admin:admin,link:""}) %>
+<%- include("notification.ejs") %>
+<main>
+    <div class="breadcrumb">
+        <ul>
+            <li><a href="/profile">Profile</a></li>
+            <li>/</li>
+            <li><a href="#">Edit User</a></li>
+        </ul>
+    </div>
+    <div class="intro">
+        <h1>Edit User</h1>
+        <div class="buttons">
+            <a href="/profile" class="cancel">Cancel</a>
+        </div>
+    </div>
+    <form action="/profile/edit" class="signup-form" method="post">
+        <input name="_csrf" type="hidden" value="<%= csrfToken %>">
+        <div class="signup-input">
+            <label for="firstName">First Name</label>
+            <input id="firstName" value="<%= user.firstName %>" name="firstName" placeholder="First Name" required
+                   type="text">
+        </div>
+        <div class="signup-input">
+            <label for="lastName">Last Name</label>
+            <input id="lastName" value="<%= user.lastName %>" name="lastName" placeholder="Last Name" required
+                   type="text">
+        </div>
+        <div class="signup-input">
+            <label for="email">Email</label>
+            <input id="email" name="email" value="<%= user.email %>" placeholder="Email" required type="email">
+        </div>
+        <div class="signup-input">
+            <button class="submit" type="submit">Update</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>

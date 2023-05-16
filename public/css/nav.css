@@ -34,6 +34,14 @@ nav {
     color: #565656;
 }
 
+.links {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px;
+}
+
 .links ul {
     display: flex;
     flex-direction: row;
@@ -58,14 +66,8 @@ nav {
     text-decoration: underline;
 }
 
-#logout a {
+#logout {
     color: #fa4242;
-    font-size: 20px;
-    margin-right: -10px;
-    font-weight: 700;
-    margin-left: 20px;
-    padding: 5px;
-    cursor: pointer;
 }
 
 .clicked {
@@ -73,4 +75,32 @@ nav {
     font-weight: 900;
     font-size: 18px;
     cursor: pointer;
+}
+
+.account {
+    margin-left: 25px;
+}
+
+.account select {
+    border: none;
+    background-color: #f6f6f6;
+    font-size: 20px;
+    padding: 5px 8px;
+    border-radius: 10px;
+    font-weight: 900;
+    color: #565656;
+    cursor: pointer;
+    text-align: center;
+}
+
+.account select:focus {
+    outline: none;
+}
+
+.account option {
+    font-size: 18px;
+    font-weight: 900;
+    color: #565656;
+    cursor: pointer;
+    text-align: center;
 }

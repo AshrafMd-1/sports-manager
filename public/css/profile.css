@@ -1,0 +1,37 @@
+.key {
+    font-size: 24px;
+    font-weight: 600;
+    color: #545454;
+    margin: 0 5px;
+    padding: 1px;
+
+}
+
+.value {
+    font-size: 22px;
+    font-weight: 600;
+    color: #000000;
+    margin: 0 5px;
+    padding: 1px;
+}
+
+.detail {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 10px;
+    margin: 10px 0;
+}
+
+.details {
+    margin: 20px 30px;
+    background-color: #e6e6e6;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+.button {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

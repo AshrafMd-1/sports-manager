@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta content="<%= csrfToken %>" name="_csrf">
+    <title><%= title %></title>
+    <link href="./css/dashboard.css" rel="stylesheet">
+    <link href="./css/profile.css" rel="stylesheet">
+    <link href="./css/nav.css" rel="stylesheet">
+</head>
+<body>
+<%- include("nav.ejs",{admin:admin,link:""}) %>
+<%- include("notification.ejs") %>
+<main>
+    <h1>Here is your profile, <span class="user"><%= user %></span></h1>
+    <div class="details">
+        <div class="detail">
+            <span class="key">Role</span>
+            <% if(userDetail.admin){ %>
+                <span class="value">Admin</span>
+            <% }else{ %>
+                <span class="value">Player</span>
+            <% } %>
+        </div>
+        <div class="detail">
+            <span class="key">First Name</span>
+            <span class="value"><%= userDetail.firstName %></span>
+        </div>
+        <div class="detail">
+            <span class="key">Last Name</span>
+            <span class="value"><%= userDetail.lastName %></span>
+        </div>
+        <div class="detail">
+            <span class="key">Email</span>
+            <span class="value"><%= userDetail.email %></span>
+        </div>
+        <div class="detail">
+            <span class="key">Account Created</span>
+            <span class="value"><%= new Date(userDetail.createdAt).toISOString().slice(0, 10) %></span>
+        </div>
+        <div class="detail">
+            <span class="key">Last Updated</span>
+            <span class="value"><%= new Date(userDetail.updatedAt).toISOString().slice(0, 10) %></span>
+        </div>
+    </div>
+    <div class="button">
+        <a class="edit-profile" href="/profile/edit">Edit Profile</a>
+        <a class="change-password" href="/profile/change-password">Change Password</a>
+    </div>
+</main>
+</body>
+</html>
