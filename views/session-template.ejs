@@ -14,11 +14,11 @@
                     <div class="session-part">
                         <span class="key"><%= session[i].sport %></span>
                         <span class="value">#<%= session[i].id %></span>
-                    </div>
-                    <div class="joined">
-                        <% if(displayPrompt && session[i].joined){ %>
-                            <span>Joined</span>
-                        <% } %>
+                        <div class="joined">
+                            <% if(displayPrompt && session[i].joined){ %>
+                                <span>Joined</span>
+                            <% } %>
+                        </div>
                     </div>
                     <% if(displayPrompt){ %>
                         <div class="status">

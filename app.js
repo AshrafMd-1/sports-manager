@@ -466,6 +466,9 @@ app.get("/sports/:sport/:id/join", isLoggedIn, async (req, res) => {
     } else if (session.membersList.includes(req.user.email)) {
       res.locals.messages = req.flash("info", `Already joined the Session`);
       res.redirect("/sports/" + req.params.sport + "/" + req.params.id);
+    } else if (session.remaining < 1) {
+      res.locals.messages = req.flash("info", `All slots are booked`);
+      res.redirect("/sports/" + req.params.sport + "/" + req.params.id);
     } else {
       await Session.joinSession(req.user.email, req.params.id);
       res.locals.messages = req.flash("success", `Joined the Session`);

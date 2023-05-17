@@ -25,7 +25,7 @@
     <div class="intro">
         <h1><%= session[0].sport %> #<%= session[0].id %></h1>
         <div class="buttons">
-            <% if(session[0].date > new Date() && !session[0].joined && !session[0].cancel){ %>
+            <% if(session[0].date > new Date() && !session[0].joined && !session[0].cancel && session[0].remaining > 0){ %>
                 <a href="/sports/<%= session[0].sport %>/<%= session[0].id %>/join" class="join">Join
                     Session</a>
             <% } %>
@@ -39,6 +39,8 @@
             <span class="status-des orange">Session Ended</span>
         <% }else if(session[0].joined){ %>
             <span class="status-des blue">Joined</span>
+        <% }else if(session[0].remaining < 1){ %>
+            <span class="status-des red">Session Full</span>
         <% }else if(session[0].date > new Date()){ %>
             <span class="status-des green">Open</span>
         <% } %>
