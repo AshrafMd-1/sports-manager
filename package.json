@@ -6,8 +6,8 @@
   "scripts": {
     "start:db:server": "sudo service postgresql start",
     "start:db:console": "sudo -i -u postgres && psql",
-    "start:dev": "nodemon -e js,ejs",
-    "start:prod": "node app.js",
+    "start:dev": "nodemon app.js",
+    "start:prod": "npx sequelize-cli db:create && node app.js",
     "pretest": "NODE_ENV=test npx sequelize-cli db:drop && NODE_ENV=test npx sequelize-cli db:create",
     "test": "NODE_ENV=test jest --detectOpenHandles",
     "prepare": "husky install"
